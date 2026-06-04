@@ -1,0 +1,102 @@
+/* Fondo */
+.login-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  background-image: url("img/fondo.png");
+  background-size: cover;       /* Ajusta la imagen al tamaño de la pantalla */
+  background-repeat: no-repeat; /* Evita que se repita */
+  background-position: center;  /* Centra la imagen */
+}
+
+/* Caja de login */
+.login-box {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 350px;
+
+  display: flex;          /* activa flexbox */
+  flex-direction: column; /* organiza elementos en columna */
+  align-items: center;    /* centra horizontalmente todo dentro */
+}
+
+
+/* Logo */
+.logo img {
+  width: 250px;       /* tamaño del logo */
+  display: block;     /* asegura que se comporte como bloque */
+  margin: 0 auto 15px; /* lo centra y da espacio abajo */
+  mix-blend-mode: multiply;
+}
+.logo h1 {
+  color: #007bff;
+  margin: 10px 0;
+}
+
+/* Inputs */
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: block;      /* asegura que se centre con margin auto */
+  box-sizing: border-box;
+}
+
+/* Botón */
+.login-box button {
+  width: 70%;
+  padding: 12px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 8px;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.login-box button:hover {
+  background: #0056b3;
+}
+
+
+/* Links */
+.login-links {
+  margin-top: 10px;
+}
+.login-links a {
+  color: #007bff;
+  text-decoration: none;
+}
+.login-links a:hover {
+  text-decoration: underline;
+}
+
+/* ── Select de rol ── */
+.login-box select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.login-box select:focus {
+  outline: none;
+  border-color: #007bff;
+}
