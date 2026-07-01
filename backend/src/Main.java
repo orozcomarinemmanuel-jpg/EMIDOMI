@@ -1,6 +1,11 @@
 import dao.ClienteDAO;
+import dao.RestauranteDAO;
 import model.Cliente;
+import model.Restaurante;
+
 import java.util.List;
+import dao.RestauranteDAO;
+import model.Restaurante;
 
 /**
  * Clase principal para probar el módulo de clientes.
@@ -68,5 +73,44 @@ public class Main {
         System.out.println("\n=== ELIMINAR CLIENTE ===");
         boolean eliminado = clienteDAO.eliminar(1);
         System.out.println(eliminado ? "Cliente eliminado correctamente ✅" : "Error al eliminar ❌");
+        // ============================
+// PRUEBA CRUD - RESTAURANTE
+// ============================
+RestauranteDAO restauranteDAO = new RestauranteDAO();
+
+// 1. INSERTAR un restaurante
+System.out.println("\n=== INSERTAR RESTAURANTE ===");
+Restaurante nuevoRestaurante = new Restaurante();
+nuevoRestaurante.setNombre("Sabores de Casa");
+nuevoRestaurante.setDireccion("Cra 10 #15-30");
+nuevoRestaurante.setCiudad("Santa Rosa de Cabal");
+nuevoRestaurante.setTelefono("3157894561");
+nuevoRestaurante.setCorreo("saboresdecasa@email.com");
+nuevoRestaurante.setCategoria("Comida Casera");
+nuevoRestaurante.setCalificacion(4.5);
+
+boolean restauranteInsertado = restauranteDAO.insertar(nuevoRestaurante);
+System.out.println(restauranteInsertado ? "Restaurante insertado correctamente ✅" : "Error al insertar ❌");
+
+// 2. LISTAR todos los restaurantes
+System.out.println("\n=== LISTAR RESTAURANTES ===");
+List<Restaurante> restaurantes = restauranteDAO.listarTodos();
+for (Restaurante r : restaurantes) {
+    System.out.println(r);
+}
+
+// 3. ACTUALIZAR el primer restaurante de la lista (si existe)
+if (!restaurantes.isEmpty()) {
+    System.out.println("\n=== ACTUALIZAR RESTAURANTE ===");
+    Restaurante paraActualizar = restaurantes.get(0);
+    paraActualizar.setCalificacion(5.0);
+    boolean restauranteActualizado = restauranteDAO.actualizar(paraActualizar);
+    System.out.println(restauranteActualizado ? "Restaurante actualizado correctamente ✅" : "Error al actualizar ❌");
+
+    // 4. ELIMINAR ese mismo restaurante
+    System.out.println("\n=== ELIMINAR RESTAURANTE ===");
+    boolean restauranteEliminado = restauranteDAO.eliminar(paraActualizar.getIdRestaurante());
+    System.out.println(restauranteEliminado ? "Restaurante eliminado correctamente ✅" : "Error al eliminar ❌");
+}
     }
 }
