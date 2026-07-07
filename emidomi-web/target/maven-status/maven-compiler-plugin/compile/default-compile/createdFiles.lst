@@ -1,4 +1,0 @@
-com\emidomi\web\util\ConexionDB.class
-com\emidomi\web\dao\ClienteDAO.class
-com\emidomi\web\servlet\PruebaServlet.class
-com\emidomi\web\model\Cliente.class
