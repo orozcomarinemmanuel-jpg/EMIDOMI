@@ -31,9 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
- 
-# Configuracion local con credenciales (no subir) 
-application.properties 
- 
-# Configuracion local con credenciales (no subir) 
-application.properties 
+# Configuracion local con credenciales (no subir)
+application.properties
