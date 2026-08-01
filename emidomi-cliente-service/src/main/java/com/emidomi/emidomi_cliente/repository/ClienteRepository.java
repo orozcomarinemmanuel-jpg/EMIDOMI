@@ -3,6 +3,7 @@ package com.emidomi.emidomi_cliente.repository;
 import com.emidomi.emidomi_cliente.model.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 /**
  * Repositorio para la entidad Cliente.
@@ -21,5 +22,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
     // Aquí podemos declarar métodos personalizados más adelante,
     // por ejemplo: Cliente findByCorreo(String correo);
     // Spring Data JPA genera el SQL automáticamente a partir del nombre del método.
-
+// Busca un cliente por su correo electrónico (lo usamos para login y para
+// verificar que no se registre un correo duplicado)
+    Optional<Cliente> findByCorreo(String correo);
 }

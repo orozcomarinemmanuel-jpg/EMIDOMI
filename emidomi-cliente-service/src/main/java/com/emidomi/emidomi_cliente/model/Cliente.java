@@ -26,6 +26,10 @@ public class Cliente {
     @Column(name = "correo", nullable = false, unique = true, length = 150)
     private String correo;
 
+    // Contraseña del cliente, se guarda encriptada (nunca en texto plano)
+    @Column(name = "contrasena", nullable = false, length = 255)
+    private String contrasena;
+
     @Column(name = "telefono", nullable = false, length = 20)
     private String telefono;
 
@@ -97,6 +101,14 @@ public class Cliente {
 
     public String getTelefono() {
         return telefono;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public void setTelefono(String telefono) {
