@@ -18,6 +18,7 @@ import java.util.List;
  */
 @RestController                      // Combina @Controller + @ResponseBody: cada método devuelve JSON directamente
 @RequestMapping("/api/clientes")     // Prefijo base de todas las rutas de este controller
+@CrossOrigin(origins = "http://localhost:5173")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -62,5 +63,29 @@ public class ClienteController {
         return clienteService.buscarPorId(id)
                 .map(cliente -> new ResponseEntity<Object>(cliente, HttpStatus.OK))
                 .orElse(new ResponseEntity<Object>("Cliente no encontrado", HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * PUT /api/clientes/{id}
+     * Actualiza los datos de un cliente existente.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarCliente(@PathVariable Integer id, @RequestBody Cliente cliente) {
+        try {
+            Cliente clienteActualizado = clienteService.actualizarCliente(id, cliente);
+            return new ResponseEntity<>(clienteActualizado, HttpStatus.OK); // 200
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
+        }
+    }
+
+    /**
+     * DELETE /api/clientes/{id}
+     * Elimina un cliente existente.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarCliente(@PathVariable Integer id) {
+        clienteService.eliminarCliente(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
     }
 }

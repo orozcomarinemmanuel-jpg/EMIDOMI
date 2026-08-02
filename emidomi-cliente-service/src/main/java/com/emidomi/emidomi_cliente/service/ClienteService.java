@@ -55,4 +55,29 @@ public class ClienteService {
     public Optional<Cliente> buscarPorId(Integer id) {
         return clienteRepository.findById(id);
     }
+
+    /**
+     * Actualiza los datos de un cliente existente.
+     * Busca el cliente por id; si no existe, lanza una excepción.
+     */
+    public Cliente actualizarCliente(Integer id, Cliente datosActualizados) {
+        Cliente clienteExistente = clienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con id: " + id));
+
+        clienteExistente.setNombre(datosActualizados.getNombre());
+        clienteExistente.setApellido(datosActualizados.getApellido());
+        clienteExistente.setCorreo(datosActualizados.getCorreo());
+        clienteExistente.setTelefono(datosActualizados.getTelefono());
+        clienteExistente.setDireccion(datosActualizados.getDireccion());
+        clienteExistente.setCiudad(datosActualizados.getCiudad());
+
+        return clienteRepository.save(clienteExistente);
+    }
+
+    /**
+     * Elimina un cliente por su id.
+     */
+    public void eliminarCliente(Integer id) {
+        clienteRepository.deleteById(id);
+    }
 }
