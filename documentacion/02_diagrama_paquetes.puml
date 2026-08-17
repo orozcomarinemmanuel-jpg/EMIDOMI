@@ -1,0 +1,168 @@
+@startuml EMIDOMI_Diagrama_Paquetes
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+skinparam linetype ortho
+title Diagrama de Paquetes - EMIDOMI
+
+package "Android App\n(com.example.ga8_220501096_aa2_ev01)" #LightBlue {
+
+    package "ui.screens" <<Folder>> #E3F2FD {
+        [LoginScreen]
+        [RegistroScreen]
+        [PantallaPrincipal]
+        [PantallaCarrito]
+        [ProductoDetalleScreen]
+        [HistorialScreen]
+        [DetallePedidoScreen]
+        [PagoScreen]
+        [RestauranteScreen]
+        [RepartidorScreen]
+    }
+
+    package "ui.theme" <<Folder>> #E3F2FD {
+        [Color]
+        [Theme]
+        [Type]
+    }
+
+    package "viewmodel" <<Folder>> #BBDEFB {
+        [AuthViewModel]
+        [ProductoViewModel]
+        [PedidoViewModel]
+        [PagoViewModel]
+        [RestauranteViewModel]
+        [RepartidorViewModel]
+        [DetallePedidoViewModel]
+    }
+
+    package "data.repository" <<Folder>> #C8E6C9 {
+        [AuthRepository]
+        [ProductoRepository]
+        [PedidoRepository]
+        [PagoRepository]
+        [RestauranteRepository]
+        [RepartidorRepository]
+        [DetallePedidoRepository]
+    }
+
+    package "data.network" <<Folder>> #FFF9C4 {
+        [RetrofitClient]
+        [AuthService]
+        [ProductoService]
+        [PedidoService]
+        [PagoService]
+        [RestauranteService]
+        [RepartidorService]
+        [DetallePedidoService]
+    }
+
+    package "data.model" <<Folder>> #FFE0B2 {
+        [Cliente]
+        [Producto]
+        [Pedido]
+        [DetallePedido]
+        [Pago]
+        [Restaurante]
+        [Repartidor]
+        [LoginRequest]
+        [RegistroRequest]
+        [PedidoRequest]
+    }
+
+    package "data.session" <<Folder>> #F3E5F5 {
+        [SessionManager]
+    }
+
+    package "root" <<Folder>> #ECEFF1 {
+        [MainActivity]
+    }
+}
+
+package "Backend - Spring Boot\n(com.emidomi.emidomi_cliente)" #LightGreen {
+
+    package "controller" <<Folder>> #C8E6C9 {
+        [AuthController]
+        [ClienteController]
+        [PedidoController]
+        [ProductoController]
+        [PagoController]
+        [RestauranteController]
+        [RepartidorController]
+        [DetallePedidoController]
+    }
+
+    package "service" <<Folder>> #DCEDC8 {
+        [ClienteService]
+        [PedidoService]
+        [ProductoService]
+        [PagoService]
+        [RestauranteService]
+        [RepartidorService]
+        [DetallePedidoService]
+    }
+
+    package "repository" <<Folder>> #F1F8E9 {
+        [ClienteRepository]
+        [PedidoRepository]
+        [ProductoRepository]
+        [PagoRepository]
+        [RestauranteRepository]
+        [RepartidorRepository]
+        [DetallePedidoRepository]
+    }
+
+    package "model" <<Folder>> #FFF3E0 {
+        [ClienteJ]
+        [PedidoJ]
+        [ProductoJ]
+        [DetallePedidoJ]
+        [PagoJ]
+        [RestauranteJ]
+        [RepartidorJ]
+    }
+
+    package "config" <<Folder>> #FCE4EC {
+        [SecurityConfig]
+        [JwtUtil]
+        [JwtAuthFilter]
+    }
+
+    database "MySQL\ndb_domicilios" #FFE082
+}
+
+package "MySQL Database" #FFFDE7 {
+    database "db_domicilios" as DB #FFE082 {
+    }
+}
+
+' --- Android Interno ---
+[MainActivity] --> [ui.screens]
+[ui.screens] --> [viewmodel]
+[viewmodel] --> [data.repository]
+[data.repository] --> [data.network]
+[data.network] --> [data.model]
+[viewmodel] --> [data.model]
+[AuthViewModel] --> [data.session]
+[ui.screens] --> [data.model]
+
+' --- Backend Interno ---
+[controller] --> [service]
+[service] --> [repository]
+[repository] --> [model]
+[config] --> [JwtUtil]
+[JwtAuthFilter] ..> [JwtUtil]
+
+' --- DB ---
+[repository] --> DB
+
+' --- Red ---
+[android.serialkiller.RetrofitClient] ..> [AuthController] : HTTP
+note right of [android.serialkiller.RetrofitClient]
+  URL: http://10.0.2.2:8080
+  JWT Bearer Token
+end note
+
+' Simplified cross-project connection
+[data.network] ..> [controller] : REST API\n(HTTP/JSON)
+
+@enduml

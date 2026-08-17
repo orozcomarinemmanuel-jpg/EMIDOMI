@@ -1,0 +1,39 @@
+@startuml EMIDOMI_Mapa_Navegacion
+skinparam activityFontSize 14
+skinparam arrowFontSize 12
+title Mapa de Navegación - EMIDOMI (11 pantallas)
+
+[*] --> Login
+
+Login --> Home : Login exitoso\n(JWT Token)
+Login --> Registro : "Crear cuenta"
+
+Registro --> Login : Registro exitoso
+
+Home --> ProductoDetalle : Ver producto
+Home --> Carrito : Ver carrito
+Home --> Historial : Ver pedidos
+Home --> Restaurantes : Ver restaurantes
+Home --> Repartidores : Ver repartidores
+Home --> Login : Cerrar sesión
+
+ProductoDetalle --> Home : Volver
+ProductoDetalle --> Carrito : Agregar al carrito
+
+Carrito --> Home : Volver
+Carrito --> Confirmacion : Confirmar pedido\n(POST /api/pedidos)
+
+Confirmacion --> Pago : "Volver al inicio"\n(pago)
+Confirmacion --> Carrito : Error → Reintentar
+
+Pago --> Home : Continuar\n(POST /api/pagos)
+
+Historial --> Home : Volver
+Historial --> DetallePedido : Ver detalle
+
+DetallePedido --> Historial : Volver
+
+Restaurantes --> Home : Volver
+Repartidores --> Home : Volver
+
+@enduml

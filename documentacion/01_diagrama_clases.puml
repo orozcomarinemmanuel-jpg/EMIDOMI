@@ -1,0 +1,242 @@
+@startuml EMIDOMI_Diagrama_Clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+title Diagrama de Clases - EMIDOMI (Sistema de Domicilios)
+
+package "Backend - Model" <<Rectangle>> {
+
+    class Cliente {
+        - idCliente : Integer
+        - nombre : String
+        - apellido : String
+        - correo : String
+        - contrasena : String
+        - telefono : String
+        - direccion : String
+        - ciudad : String
+        - fechaRegistro : Timestamp
+        - estado : Boolean
+        --
+        + getters/setters
+    }
+
+    class Producto {
+        - idProducto : Integer
+        - idRestaurante : Integer
+        - nombre : String
+        - descripcion : String
+        - precio : BigDecimal
+        - categoria : String
+        - estado : Boolean
+        - imagen : String
+        - emoji : String
+        - fechaRegistro : Timestamp
+        --
+        + getters/setters
+    }
+
+    class Pedido {
+        - idPedido : Integer
+        - idCliente : Integer
+        - idRestaurante : Integer
+        - idRepartidor : Integer
+        - direccionEntrega : String
+        - ciudadEntrega : String
+        - estadoPedido : EstadoPedido
+        - subtotal : BigDecimal
+        - costoDomicilio : BigDecimal
+        - total : BigDecimal
+        - notas : String
+        - fechaPedido : Timestamp
+        - fechaEntrega : Timestamp
+        --
+        + getters/setters
+    }
+
+    class DetallePedido {
+        - idDetalle : Integer
+        - idPedido : Integer
+        - idProducto : Integer
+        - cantidad : Integer
+        - precioUnitario : BigDecimal
+        - subtotal : BigDecimal
+        --
+        + getters/setters
+    }
+
+    class Pago {
+        - idPago : Integer
+        - idPedido : Integer
+        - metodoPago : MetodoPago
+        - estadoPago : EstadoPago
+        - monto : BigDecimal
+        - referencia : String
+        - fechaPago : Timestamp
+        --
+        + getters/setters
+    }
+
+    class Restaurante {
+        - idRestaurante : Integer
+        - nombre : String
+        - direccion : String
+        - ciudad : String
+        - telefono : String
+        - correo : String
+        - categoria : String
+        - calificacion : BigDecimal
+        - estado : Boolean
+        - fechaRegistro : Timestamp
+        --
+        + getters/setters
+    }
+
+    class Repartidor {
+        - idRepartidor : Integer
+        - nombre : String
+        - apellido : String
+        - correo : String
+        - telefono : String
+        - numeroLicencia : String
+        - vehiculo : String
+        - placa : String
+        - disponible : Boolean
+        - estado : Boolean
+        - fechaRegistro : Timestamp
+        --
+        + getters/setters
+    }
+
+    enum EstadoPedido {
+        PENDIENTE
+        CONFIRMADO
+        EN_PREPARACION
+        EN_CAMINO
+        ENTREGADO
+        CANCELADO
+    }
+
+    enum MetodoPago {
+        efectivo
+        tarjeta_credito
+        tarjeta_debito
+        transferencia
+        nequi
+        daviplata
+    }
+
+    enum EstadoPago {
+        pendiente
+        aprobado
+        rechazado
+        reembolsado
+    }
+
+    Pedido --> EstadoPedido
+    Pago --> MetodoPago
+    Pago --> EstadoPago
+}
+
+package "Backend - Relationships" <<Rectangle>> {
+    Pedido "1" --> "0..*" DetallePedido : contiene
+    Pedido "1" --> "0..1" Pago : genera
+    Pedido "1" --> "1" Cliente : pertenece
+    Producto "0..*" --> "0..1" Restaurante : pertenece
+    Pedido "0..*" --> "0..1" Repartidor : asignado_a
+}
+
+package "Android - Data Models" <<Rectangle>> {
+    class ClienteKt {
+        + idCliente : Int?
+        + nombre : String
+        + apellido : String
+        + correo : String
+        + contrasena : String
+        + telefono : String
+        + direccion : String
+        + ciudad : String
+        + estado : Boolean?
+        + fechaRegistro : String?
+    }
+
+    class ProductoKt {
+        + idProducto : Int?
+        + nombre : String
+        + descripcion : String
+        + precio : Double
+        + imagen : String?
+        + emoji : String?
+        + categoria : String?
+        + estado : Boolean?
+    }
+
+    class PedidoKt {
+        + idPedido : Int?
+        + idCliente : Int?
+        + idRestaurante : Int?
+        + idRepartidor : Int?
+        + direccionEntrega : String?
+        + ciudadEntrega : String?
+        + estadoPedido : String?
+        + subtotal : Double?
+        + costoDomicilio : Double?
+        + total : Double?
+        + notas : String?
+        + fechaPedido : String?
+        + fechaEntrega : String?
+        + detallePedido : List<DetallePedido>?
+    }
+
+    class DetallePedidoKt {
+        + idDetalle : Int?
+        + idPedido : Int?
+        + idProducto : Int?
+        + cantidad : Int?
+        + precioUnitario : Double?
+        + subtotal : Double?
+    }
+
+    class PagoKt {
+        + idPago : Int?
+        + idPedido : Int?
+        + metodoPago : String?
+        + estadoPago : String?
+        + monto : Double
+        + referencia : String?
+        + fechaPago : String?
+    }
+
+    class PedidoRequest {
+        + idCliente : Int?
+        + direccionEntrega : String
+        + subtotal : Double
+        + total : Double
+        + detallePedido : List<DetallePedidoRequest>
+    }
+
+    class DetallePedidoRequest {
+        + idProducto : Int
+        + cantidad : Int
+    }
+
+    class LoginRequest {
+        + correo : String
+        + contrasena : String
+    }
+
+    class RegistroRequest {
+        + nombre : String
+        + apellido : String
+        + correo : String
+        + contrasena : String
+        + telefono : String
+        + direccion : String
+        + ciudad : String
+    }
+
+    PedidoKt --> DetallePedidoKt
+    PedidoRequest --> DetallePedidoRequest
+}
+
+@enduml

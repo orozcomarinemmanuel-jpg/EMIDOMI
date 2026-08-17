@@ -1,0 +1,145 @@
+@startuml EMIDOMI_Diagrama_Componentes
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam packageStyle rectangle
+title Diagrama de Componentes - EMIDOMI
+
+package "Capa de Presentación (UI)" #E3F2FD {
+    component "LoginScreen" as LS
+    component "RegistroScreen" as RS
+    component "PantallaPrincipal" as PP
+    component "PantallaCarrito" as PC
+    component "ProductoDetalleScreen" as PDS
+    component "HistorialScreen" as HS
+    component "DetallePedidoScreen" as DPS
+    component "PagoScreen" as PGS
+    component "RestauranteScreen" as RSTS
+    component "RepartidorScreen" as RPS
+}
+
+package "Capa de Lógica de Negocio (ViewModel)" #BBDEFB {
+    component "AuthViewModel" as AVM
+    component "ProductoViewModel" as PVM
+    component "PedidoViewModel" as PDVM
+    component "PagoViewModel" as PGVM
+    component "RestauranteViewModel" as RVM
+    component "RepartidorViewModel" as RPVM
+    component "DetallePedidoViewModel" as DPVM
+}
+
+package "Capa de Datos (Repository)" #C8E6C9 {
+    component "AuthRepository" as AREPO
+    component "ProductoRepository" as PREPO
+    component "PedidoRepository" as PDREPO
+    component "PagoRepository" as PGREPO
+    component "RestauranteRepository" as RTREPO
+    component "RepartidorRepository" as RPREPO
+    component "DetallePedidoRepository" as DPREPO
+}
+
+package "Capa de Red (Network)" #FFF9C4 {
+    component "RetrofitClient" as RC
+    component "AuthService" as AS
+    component "ProductoService" as PS
+    component "PedidoService" as PDS2
+    component "PagoService" as PGS2
+    component "RestauranteService" as RSS
+    component "RepartidorService" as RPS2
+    component "DetallePedidoService" as DPS2
+}
+
+package "Servidor Backend (Spring Boot)" #DCEDC8 {
+    component "SecurityConfig\n(JWT + CORS)" as SEC
+    component "JwtAuthFilter" as JAF
+    component "JwtUtil" as JU
+    component "AuthController" as AC
+    component "ClienteController" as CC
+    component "PedidoController" as PDC
+    component "ProductoController" as PC2
+    component "PagoController" as PGC
+    component "RestauranteController" as RTC
+    component "RepartidorController" as RPC
+    component "DetallePedidoController" as DPC
+    component "Service Layer\n(7 Services)" as SL
+    component "Repository Layer\n(7 Repositories)" as RL
+}
+
+database "MySQL\ndb_domicilios" as DB #FFE082
+
+' --- Presentación → ViewModel ---
+LS --> AVM
+RS --> AVM
+PP --> PVM
+PC --> PDVM
+PDS --> PVM
+HS --> PDVM
+DPS --> DPVM
+PGS --> PGVM
+RSTS --> RVM
+RPS --> RPVM
+
+' --- ViewModel → Repository ---
+AREPO --> AVM
+PVM --> PREPO
+PDVM --> PDREPO
+PGVM --> PGREPO
+RVM --> RTREPO
+RPVM --> RPREPO
+DPVM --> DPREPO
+
+' --- Repository → Network Service ---
+AREPO --> AS
+PREPO --> PS
+PDREPO --> PDS2
+PGREPO --> PGS2
+RTREPO --> RSS
+RPREPO --> RPS2
+DPREPO --> DPS2
+
+' --- Network → RetrofitClient ---
+AS --> RC
+PS --> RC
+PDS2 --> RC
+PGS2 --> RC
+RSS --> RC
+RPS2 --> RC
+DPS2 --> RC
+
+' --- RetrofitClient → Backend (HTTP) ---
+RC ..> AC : POST /api/auth/login\nPOST /api/auth/registro
+RC ..> CC : CRUD /api/clientes
+RC ..> PDC : CRUD /api/pedidos
+RC ..> PC2 : GET /api/productos
+RC ..> PGC : POST /api/pagos
+RC ..> RTC : GET /api/restaurantes
+RC ..> RPC : GET /api/repartidores
+RC ..> DPC : GET /api/detalle-pedido
+
+' --- Backend Interno ---
+SEC --> JAF
+JAF --> JU
+AC --> SEC
+PDC --> SL
+PC2 --> SL
+PGC --> SL
+CC --> SL
+RTC --> SL
+RPC --> SL
+DPC --> SL
+SL --> RL
+RL --> DB
+
+note right of RC
+  Base URL: http://10.0.2.2:8080
+  Token JWT en Header Authorization
+  Formato: Bearer {token}
+end note
+
+note bottom of DB
+  7 tablas:
+  clientes, productos, pedidos,
+  detalle_pedido, pagos,
+  restaurantes, repartidores
+end note
+
+@enduml
