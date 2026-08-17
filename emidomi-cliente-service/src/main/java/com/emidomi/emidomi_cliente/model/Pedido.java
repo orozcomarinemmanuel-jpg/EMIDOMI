@@ -1,6 +1,6 @@
 package com.emidomi.emidomi_cliente.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -52,9 +52,9 @@ public class Pedido {
     @Column(name = "fecha_entrega")
     private Timestamp fechaEntrega;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pedido", insertable = false, updatable = false)
-    @JsonManagedReference
+    @JsonIgnore
     private List<DetallePedido> detallePedido;
 
     public enum EstadoPedido {

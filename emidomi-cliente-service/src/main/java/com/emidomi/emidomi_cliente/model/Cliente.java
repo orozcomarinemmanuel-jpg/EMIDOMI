@@ -1,6 +1,6 @@
 package com.emidomi.emidomi_cliente.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
@@ -104,7 +104,7 @@ public class Cliente {
         return telefono;
     }
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getContrasena() {
         return contrasena;
     }
