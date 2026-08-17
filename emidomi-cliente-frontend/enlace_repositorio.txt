@@ -1,0 +1,3 @@
+Repositorio del proyecto EMIDOMI (incluye este módulo en la carpeta emidomi-cliente-frontend):
+
+https://github.com/orozcomarinemmanuel-jpg/EMIDOMI

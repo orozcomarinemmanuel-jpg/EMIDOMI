@@ -1,0 +1,148 @@
+/* ── Reset & base ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5f5f5;
+  color: #222;
+}
+
+/* ── Contenedor general ── */
+.perfil-container {
+  max-width: 860px;
+  margin: 40px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  background: #fff;
+}
+
+/* ── Header azul ── */
+.perfil-header {
+  background: #007bff;
+  padding: 30px 28px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 160px;
+}
+
+/* Botón volver */
+.btn-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.btn-back:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+/* Botón editar */
+.btn-edit {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-edit:hover {
+  opacity: 0.75;
+}
+
+/* Info del perfil */
+.perfil-info {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: auto;
+  padding-top: 20px;
+}
+
+/* Avatar */
+.avatar-wrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.8);
+  flex-shrink: 0;
+}
+
+.avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Texto nombre y correo */
+.perfil-texto h2 {
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.perfil-texto p {
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ── Opciones ── */
+.perfil-opciones {
+  padding: 10px 0;
+  background: #fff;
+}
+
+.opcion-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 32px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+}
+
+.opcion-item:last-child {
+  border-bottom: none;
+}
+
+.opcion-item:hover {
+  background: #f5f9ff;
+}
+
+.opcion-item i {
+  font-size: 22px;
+  color: #222;
+  width: 26px;
+  text-align: center;
+}
+
+.opcion-item span {
+  font-size: 16px;
+  color: #222;
+}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>EmiDomi - Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+      <nav>
+        <a href="dashboard.html" class="nav-item active">
+  <i class="fa-solid fa-house"></i>
+  <span>Inicio</span>
+</a>
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Pedidos</span>
+        </a>
+        <a href="perfil.html" class="nav-item">
+  <i class="fa-regular fa-user"></i>
+  <span>Perfil</span>
+</a>
+       
+      </nav>
+    </aside>
+
+    <!-- ── Contenido principal ── -->
+    <main class="main-content">
+
+      <!-- Header -->
+      <header class="top-bar">
+        <div class="logo-center">
+          <img src="img/logo.png" alt="EmiDomi">
+        </div>
+        <div class="cart-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+      </header>
+
+      <!-- Buscador -->
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Buscar restaurantes o comidas">
+      </div>
+
+      <!-- Categorías -->
+      <section class="categories">
+        <div class="category-item active">
+          <div class="category-icon">🍕</div>
+          <span>Pizza</span>
+        </div>
+        <div class="category-item">
+          <div class="category-icon">🥤</div>
+          <span>Bebidas</span>
+        </div>
+        <div class="category-item">
+          <div class="category-icon">🍨</div>
+          <span>Postres</span>
+        </div>
+        <div class="category-item">
+          <div class="category-icon">🥑</div>
+          <span>Fruver</span>
+        </div>
+      </section>
+
+      <!-- Filtros -->
+      <div class="filters">
+        <button class="filter-btn active">TODOS</button>
+        <button class="filter-btn open">ABIERTOS</button>
+        <button class="filter-btn closed">CERRADOS</button>
+      </div>
+
+      <!-- Restaurantes -->
+      <section class="restaurants">
+
+        <div class="restaurant-card">
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&h=100&fit=crop" alt="Burguer Shop">
+          <div class="restaurant-info">
+            <div class="restaurant-header">
+              <strong>Burguer Shop</strong>
+              <span class="rating"><i class="fa-solid fa-star"></i> 4.8</span>
+            </div>
+            <p class="restaurant-desc">Hamburguesa americana</p>
+            <div class="restaurant-footer">
+              <span class="time">30-40 min</span>
+              <span class="price">$ 35.000</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="restaurant-card">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&h=100&fit=crop" alt="Pizza Italiana">
+          <div class="restaurant-info">
+            <div class="restaurant-header">
+              <strong>Pizza Italiana</strong>
+              <span class="rating"><i class="fa-solid fa-star"></i> 4.7</span>
+            </div>
+            <p class="restaurant-desc">Pizza Caprese</p>
+            <div class="restaurant-footer">
+              <span class="time">25-30 min</span>
+              <span class="price">$ 27.000</span>
+            </div>
+          </div>
+        </div>
+        <div class="restaurant-card">
+  <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=140&h=120&fit=crop" alt="Sushi Express">
+  <div class="restaurant-info">
+    <div class="restaurant-header">
+      <strong>Sushi Express</strong>
+      <span class="rating"><i class="fa-solid fa-star"></i> 4.6</span>
+    </div>
+    <p class="restaurant-desc">Rolls de atún y salmón</p>
+    <div class="restaurant-footer">
+      <span class="time">35-45 min</span>
+      <span class="price">$ 42.000</span>
+    </div>
+  </div>
+</div>
+
+<div class="restaurant-card">
+  <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=140&h=120&fit=crop" alt="Ensaladas Fresh">
+  <div class="restaurant-info">
+    <div class="restaurant-header">
+      <strong>Ensaladas Fresh</strong>
+      <span class="rating"><i class="fa-solid fa-star"></i> 4.5</span>
+    </div>
+    <p class="restaurant-desc">Bowl mediterráneo</p>
+    <div class="restaurant-footer">
+      <span class="time">20-30 min</span>
+      <span class="price">$ 22.000</span>
+    </div>
+  </div>
+</div>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
