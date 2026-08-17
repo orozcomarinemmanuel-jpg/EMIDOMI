@@ -114,11 +114,12 @@ fun AppDomicilios() {
         "carrito" -> PantallaCarrito(
             carrito = carrito,
             onVolver = { pantalla = "home" },
-            onConfirmarPedido = { items ->
+            onConfirmarPedido = { items, total ->
                 pedidoViewModel.confirmarPedido(
                     idCliente = idCliente,
                     direccionEntrega = direccionEntrega,
-                    items = items
+                    items = items,
+                    total = total
                 )
                 pantalla = "confirmacion"
             },
@@ -452,7 +453,7 @@ fun PantallaPrincipal(
 fun PantallaCarrito(
     carrito: MutableMap<Producto, Int>,
     onVolver: () -> Unit,
-    onConfirmarPedido: (Map<Int, Int>) -> Unit,
+    onConfirmarPedido: (Map<Int, Int>, Double) -> Unit,
     onDireccionChange: (String) -> Unit,
     direccionEntrega: String
 ) {
@@ -549,7 +550,7 @@ fun PantallaCarrito(
                         val items = carrito.mapKeys { it.key.idProducto ?: 0 }
                             .filterKeys { it > 0 }
                             .mapValues { it.value }
-                        onConfirmarPedido(items)
+                        onConfirmarPedido(items, total)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1565C0)),

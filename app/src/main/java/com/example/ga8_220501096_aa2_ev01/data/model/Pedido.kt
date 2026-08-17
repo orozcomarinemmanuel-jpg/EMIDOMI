@@ -29,6 +29,8 @@ data class DetallePedido(
 data class PedidoRequest(
     val idCliente: Int?,
     val direccionEntrega: String,
+    val subtotal: Double,
+    val total: Double,
     val detallePedido: List<DetallePedidoRequest>
 )
 

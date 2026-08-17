@@ -29,7 +29,7 @@ class PedidoViewModel : ViewModel() {
     private val _pedidoConfirmado = MutableStateFlow(false)
     val pedidoConfirmado: StateFlow<Boolean> = _pedidoConfirmado
 
-    fun confirmarPedido(idCliente: Int?, direccionEntrega: String, items: Map<Int, Int>) {
+    fun confirmarPedido(idCliente: Int?, direccionEntrega: String, items: Map<Int, Int>, total: Double = 0.0) {
         if (idCliente == null) {
             _mensaje.value = "Error: debes iniciar sesión"
             return
@@ -54,6 +54,8 @@ class PedidoViewModel : ViewModel() {
             val request = PedidoRequest(
                 idCliente = idCliente,
                 direccionEntrega = direccionEntrega,
+                subtotal = total,
+                total = total,
                 detallePedido = detalle
             )
 
