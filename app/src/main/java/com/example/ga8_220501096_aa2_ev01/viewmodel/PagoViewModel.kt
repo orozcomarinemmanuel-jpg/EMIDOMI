@@ -38,7 +38,7 @@ class PagoViewModel : ViewModel() {
                 idPago = null,
                 idPedido = idPedido,
                 metodoPago = metodoPago,
-                estadoPago = "PENDIENTE",
+                estadoPago = "pendiente",
                 monto = monto,
                 referencia = null,
                 fechaPago = null
