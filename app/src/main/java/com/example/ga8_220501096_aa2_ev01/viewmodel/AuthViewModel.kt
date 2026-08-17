@@ -81,6 +81,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     RetrofitClient.authToken = token
                     SessionManager.saveToken(context, token)
                     SessionManager.saveUser(context, correo.value, correo.value.substringBefore("@"))
+
+                    val idCli = decodeIdCliente(token)
+                    if (idCli != null) {
+                        SessionManager.saveIdCliente(context, idCli)
+                        _idCliente.value = idCli
+                    }
+
                     _nombreUsuario.value = correo.value.substringBefore("@")
                     _sesionActiva.value = true
                     _mensaje.value = "Bienvenido"
@@ -164,5 +171,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun limpiarMensaje() {
         _mensaje.value = null
+    }
+
+    private fun decodeIdCliente(token: String): Int? {
+        return try {
+            val parts = token.split(".")
+            if (parts.size < 3) return null
+            val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.DEFAULT))
+            val json = org.json.JSONObject(payload)
+            json.optInt("idCliente", 0).takeIf { it > 0 }
+        } catch (e: Exception) {
+            null
+        }
     }
 }

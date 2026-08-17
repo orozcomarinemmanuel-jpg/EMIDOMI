@@ -24,7 +24,7 @@ fun DetallePedidoScreen(
     onVolver: () -> Unit,
     onRecargar: () -> Unit
 ) {
-    val total = detalles.sumOf { it.subtotal }
+    val total = detalles.sumOf { it.subtotal ?: 0.0 }
 
     Column(
         modifier = Modifier
@@ -108,19 +108,19 @@ fun DetallePedidoScreen(
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = detalle.nombreProducto ?: "Producto #${detalle.idProducto}",
+                                        text = "Producto #${detalle.idProducto}",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 16.sp
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
-                                        text = "$${detalle.precioUnitario.toInt()} x ${detalle.cantidad}",
+                                        text = "$${(detalle.precioUnitario ?: 0.0).toInt()} x ${detalle.cantidad ?: 0}",
                                         fontSize = 13.sp,
                                         color = Color.Gray
                                     )
                                 }
                                 Text(
-                                    text = "$${detalle.subtotal.toInt()}",
+                                    text = "$${(detalle.subtotal ?: 0.0).toInt()}",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
                                     color = Color(0xFF1565C0)

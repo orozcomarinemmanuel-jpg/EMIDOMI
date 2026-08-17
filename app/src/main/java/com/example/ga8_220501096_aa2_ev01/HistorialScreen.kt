@@ -85,7 +85,7 @@ fun HistorialScreen(
 
 @Composable
 fun PedidoCard(pedido: Pedido, onPedidoClick: (Int) -> Unit) {
-    val estadoColor = when (pedido.estado) {
+    val estadoColor = when (pedido.estadoPedido) {
         "PENDIENTE" -> Color(0xFFFFA726)
         "EN_PREPARACION" -> Color(0xFF42A5F5)
         "EN_CAMINO" -> Color(0xFFAB47BC)
@@ -118,7 +118,7 @@ fun PedidoCard(pedido: Pedido, onPedidoClick: (Int) -> Unit) {
                     colors = CardDefaults.cardColors(containerColor = estadoColor.copy(alpha = 0.15f))
                 ) {
                     Text(
-                        text = pedido.estado ?: "DESCONOCIDO",
+                        text = pedido.estadoPedido ?: "DESCONOCIDO",
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
@@ -129,7 +129,7 @@ fun PedidoCard(pedido: Pedido, onPedidoClick: (Int) -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            pedido.fecha?.let {
+            pedido.fechaPedido?.let {
                 Text(text = "📅 $it", fontSize = 13.sp, color = Color.Gray)
             }
 
@@ -150,11 +150,11 @@ fun PedidoCard(pedido: Pedido, onPedidoClick: (Int) -> Unit) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "${detalle.nombreProducto} x${detalle.cantidad}",
+                                text = "Producto #${detalle.idProducto} x${detalle.cantidad}",
                                 fontSize = 13.sp
                             )
                             Text(
-                                text = "$${detalle.subtotal.toInt()}",
+                                text = "$${(detalle.subtotal ?: 0.0).toInt()}",
                                 fontSize = 13.sp,
                                 color = Color.Gray
                             )
@@ -173,7 +173,7 @@ fun PedidoCard(pedido: Pedido, onPedidoClick: (Int) -> Unit) {
             ) {
                 Text(text = "Total", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Text(
-                    text = "$${pedido.total.toInt()}",
+                    text = "$${(pedido.total ?: 0.0).toInt()}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = Color(0xFF1565C0)

@@ -590,12 +590,12 @@ fun PedidoConfirmacionScreen(
             color = Color(0xFF1565C0)
         )
         Text(
-            text = "Estado: ${pedido.estado}",
+            text = "Estado: ${pedido.estadoPedido}",
             fontSize = 14.sp,
             color = Color.Gray
         )
         Text(
-            text = "Total: $${pedido.total.toInt()}",
+            text = "Total: $${(pedido.total ?: 0.0).toInt()}",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF1565C0)
