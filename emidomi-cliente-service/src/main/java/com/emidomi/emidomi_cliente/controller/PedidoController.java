@@ -29,6 +29,11 @@ public class PedidoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/cliente/{idCliente}")
+    public List<Pedido> buscarPorCliente(@PathVariable Integer idCliente) {
+        return pedidoService.buscarPorCliente(idCliente);
+    }
+
     @PostMapping
     public Pedido crear(@RequestBody Pedido pedido) {
         return pedidoService.guardar(pedido);

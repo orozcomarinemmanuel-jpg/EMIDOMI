@@ -22,6 +22,10 @@ public class PagoService {
         return pagoRepository.findById(id);
     }
 
+    public List<Pago> buscarPorPedido(Integer idPedido) {
+        return pagoRepository.findByIdPedido(idPedido);
+    }
+
     public Pago guardar(Pago pago) {
         return pagoRepository.save(pago);
     }

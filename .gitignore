@@ -1,3 +1,23 @@
 backend/bin/
 *.class
 emidomi-web/target/
+
+# Android
+emidomi-android/.gradle/
+emidomi-android/app/build/
+emidomi-android/build/
+emidomi-android/local.properties
+emidomi-android/.idea/
+emidomi-android/.kotlin/
+
+# Backend
+emidomi-cliente-service/target/
+emidomi-cliente-service/.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.vscode/
+*.iml
+
+# Secrets
+**/application.properties
+**/application-local.properties

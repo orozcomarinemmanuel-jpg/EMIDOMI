@@ -22,6 +22,10 @@ public class PedidoService {
         return pedidoRepository.findById(id);
     }
 
+    public List<Pedido> buscarPorCliente(Integer idCliente) {
+        return pedidoRepository.findByIdCliente(idCliente);
+    }
+
     public Pedido guardar(Pedido pedido) {
         return pedidoRepository.save(pedido);
     }
