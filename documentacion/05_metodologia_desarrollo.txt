@@ -1,0 +1,193 @@
+===============================================================
+        METODOLOGIA DE DESARROLLO - EMIDOMI
+        Sistema de Domicilios - Food Delivery App
+===============================================================
+
+METODOLOGIA APLICADA: Iterativa e Incremental
+
+Se adopto un enfoque de desarrollo iterativo e incremental, donde el 
+sistema se construyo en ciclos sucesivos, comenzando por los modulos 
+fundamentales y agregando funcionalidad progresivamente hasta completar 
+el sistema.
+
+
+===============================================================
+                   FASES DEL DESARROLLO
+===============================================================
+
+FASE 1: CONFIGURACION DEL ENTORNO
+-----------------------------------
+- Creacion del proyecto Android con Kotlin + Jetpack Compose
+- Configuracion del proyecto Spring Boot con Java 17
+- Configuracion de MySQL (base de datos db_domicilios)
+- Configuracion de Git y repositorio remoto en GitHub
+- Configuracion de dependencias: Retrofit, OkHttp, Material3, 
+  Spring Security
+
+FASE 2: DISENO DE LA BASE DE DATOS
+-----------------------------------
+- Diseno del esquema relacional con 7 tablas:
+  * clientes       - Usuarios del sistema
+  * productos      - Catalogo de productos alimenticios
+  * restaurantes   - Establecimientos asociados
+  * repartidores   - Personal de entrega
+  * pedidos        - Ordenes de compra
+  * detalle_pedido - Lineas de producto por pedido
+  * pagos          - Registros de pago
+- Definicion de llaves foraneas, restricciones NOT NULL y valores 
+  por defecto
+- Creacion de enums para estados y metodos de pago
+
+FASE 3: BACKEND - API REST
+-----------------------------------
+- Implementacion de las 7 entidades JPA con sus repositorios Spring Data
+- Creacion de 7 controladores REST con operaciones CRUD completas
+- Implementacion de 7 servicios de negocio
+- Configuracion de Spring Security con JWT (generacion, validacion, 
+  filtros)
+- Autenticacion: BCrypt para contrasenas, JWT para sesiones sin estado
+- Configuracion CORS para permitir acceso desde el emulador Android
+- Configuracion de network security para trafico HTTP en desarrollo
+
+FASE 4: ANDROID - CAPA DE DATOS
+-----------------------------------
+- Modelado de las 7 entidades como data classes en Kotlin
+- Implementacion de 7 interfaces Retrofit (services) con los endpoints 
+  del backend
+- Implementacion de 7 repositories con manejo de errores (Result<T>)
+- Configuracion del interceptor JWT en OkHttp para inyectar tokens 
+  automaticamente
+- Implementacion de SessionManager con DataStore para persistir sesion
+
+FASE 5: ANDROID - CAPA DE LOGICA (VIEWMODELS)
+-----------------------------------
+- Implementacion de 7 ViewModels con patron MVVM
+- Gestion de estados reactivos con StateFlow
+- Implementacion de AuthViewModel con decodificacion JWT para extraer 
+  idCliente
+- Implementacion de PedidoViewModel con logica de confirmacion de pedido
+- Implementacion de PagoViewModel con validaciones de monto
+
+FASE 6: ANDROID - CAPA DE PRESENTACION (UI)
+-----------------------------------
+- Implementacion de 11 pantallas con Jetpack Compose
+- Navegacion por estado (string-based) en AppDomicilios()
+- Login con validacion de campos y manejo de errores
+- Registro con formulario de 7 campos
+- Catalogo de productos con detalle, cantidad y carrito
+- Flujo completo: producto -> carrito -> confirmacion -> pago
+- Pantallas de historial con codigos de color por estado
+- Pantallas de restaurantes y repartidores
+- Diseno responsive con Material Design 3
+
+FASE 7: INTEGRACION Y PRUEBAS
+-----------------------------------
+- Pruebas de conectividad Android <-> Backend (emulador -> localhost)
+- Resolucion de problemas de serializacion Jackson 
+  (@JsonIgnore vs @JsonManagedReference)
+- Alineacion de enums entre Android y Backend (case sensitivity)
+- Resolucion de restricciones NOT NULL en base de datos
+- Resolucion de validacion de montos en flujo de pago
+- Alineacion de modelos de datos entre frontend y backend
+- Pruebas de todos los endpoints con PowerShell
+
+FASE 8: DOCUMENTACION
+-----------------------------------
+- Generacion de diagrama de clases (PlantUML)
+- Generacion de diagrama de paquetes (PlantUML)
+- Generacion de diagrama de componentes (PlantUML)
+- Generacion de mapa de navegacion (PlantUML)
+- Documentacion de metodologia de desarrollo
+- Escritura de pruebas unitarias (48 en total)
+
+
+===============================================================
+               HERRAMIENTAS UTILIZADAS
+===============================================================
+
+  CATEGORIA                HERRAMIENTA
+  -------------------------  --------------------------------
+  IDE Android              Android Studio (AGP 9.1.1)
+  Lenguaje Android         Kotlin 2.2.10
+  UI Framework             Jetpack Compose (BOM 2026.02.01)
+  Networking               Retrofit 2.11.0 + OkHttp 4.12.0
+  Persistencia local       DataStore Preferences
+  IDE Backend              IntelliJ IDEA / VS Code
+  Lenguaje Backend         Java 17
+  Framework Backend        Spring Boot 4.1.0
+  Seguridad                Spring Security 7.1.0 + JWT
+  Base de datos            MySQL Server 9.7
+  ORM                      Hibernate (Spring Data JPA)
+  Control de versiones     Git + GitHub
+  Testing                  JUnit 5 + Mockito (Backend)
+                           JUnit 4 (Android)
+
+
+===============================================================
+               ARQUITECTURA DEL SISTEMA
+===============================================================
+
+  +---------------------------------------------+
+  |           CAPA DE PRESENTACION              |
+  |      Jetpack Compose (11 pantallas)         |
+  |  MainActivity -> AppDomicilios() -> Screens |
+  +---------------------------------------------+
+  |          CAPA DE LOGICA DE NEGOCIO          |
+  |     7 ViewModels (MVVM + StateFlow)         |
+  +---------------------------------------------+
+  |              CAPA DE DATOS                  |
+  |     7 Repositories + SessionManager         |
+  +---------------------------------------------+
+  |             CAPA DE RED                     |
+  |  Retrofit + OkHttp (7 service interfaces)   |
+  |           JWT Interceptor                   |
+  +--------------------- HTTP/JSON ------------+
+  |            SERVIDOR BACKEND                 |
+  |  Spring Boot (Controllers -> Services       |
+  |              -> Repositories)               |
+  |  SecurityConfig -> JwtAuthFilter -> JwtUtil |
+  +---------------------------------------------+
+  |          CAPA DE PERSISTENCIA               |
+  |    MySQL (7 tablas con llaves foraneas)     |
+  +---------------------------------------------+
+
+
+===============================================================
+             PATRONES DE DISENO APLICADOS
+===============================================================
+
+1. MVVM (Model-View-ViewModel)
+   Separacion clara entre UI (Screen), logica de negocio 
+   (ViewModel) y datos (Model).
+
+2. Repository Pattern
+   Cada entidad tiene su Repository que abstrae la fuente de datos 
+   (API REST), facilitando el testing y mantenimiento.
+
+3. Singleton Pattern
+   RetrofitClient y SessionManager son singletons que garantizan 
+   una unica instancia.
+
+4. Observer Pattern
+   StateFlow en ViewModels permite que la UI reaccione a cambios 
+   de estado de forma reactiva.
+
+5. Filter Chain Pattern
+   JwtAuthFilter se encadena en el pipeline de Spring Security 
+   para validar tokens en cada peticion.
+
+
+===============================================================
+                    PRUEBAS UNITARIAS
+===============================================================
+
+  PROYECTO     TESTS   ARCHIVOS
+  ----------   -----   --------------------------------
+  Android       33     PedidoModelTest.kt
+                      PagoModelTest.kt
+                      ModelsTest.kt
+                      LogicaNegocioTest.kt
+  Backend       15     ModelTests.java
+                      EmidomiClienteApplicationTests.java
+  --------   -----   --------------------------------
+  TOTAL        48     Todas las pruebas PASAN
