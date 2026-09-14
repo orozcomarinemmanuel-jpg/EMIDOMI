@@ -63,6 +63,10 @@ fun AppDomicilios() {
         if (sesionActiva && pantalla == "login") {
             pantalla = "home"
         }
+        if (sesionActiva) {
+            productoViewModel.cargarProductos()
+            restauranteViewModel.cargarRestaurantes()
+        }
     }
 
     when (pantalla) {
