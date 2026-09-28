@@ -1,5 +1,6 @@
 package com.emidomi.emidomi_cliente.controller;
 
+import com.emidomi.emidomi_cliente.dto.PedidoRequest;
 import com.emidomi.emidomi_cliente.model.Pedido;
 import com.emidomi.emidomi_cliente.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +36,8 @@ public class PedidoController {
     }
 
     @PostMapping
-    public Pedido crear(@RequestBody Pedido pedido) {
-        if (pedido.getEstadoPedido() == null) {
-            pedido.setEstadoPedido(Pedido.EstadoPedido.PENDIENTE);
-        }
-        if (pedido.getSubtotal() == null) {
-            pedido.setSubtotal(new java.math.BigDecimal("0.00"));
-        }
-        if (pedido.getCostoDomicilio() == null) {
-            pedido.setCostoDomicilio(new java.math.BigDecimal("0.00"));
-        }
-        if (pedido.getTotal() == null) {
-            pedido.setTotal(new java.math.BigDecimal("0.00"));
-        }
-        return pedidoService.guardar(pedido);
+    public Pedido crear(@RequestBody PedidoRequest peticion) {
+        return pedidoService.crearConDetalle(peticion);
     }
 
     @PutMapping("/{id}")
