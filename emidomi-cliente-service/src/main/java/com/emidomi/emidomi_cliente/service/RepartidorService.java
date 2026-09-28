@@ -18,6 +18,21 @@ public class RepartidorService {
         return repartidorRepository.save(repartidor);
     }
 
+    public Optional<Repartidor> actualizar(Integer id, Repartidor datos) {
+        return repartidorRepository.findById(id).map(existente -> {
+            if (datos.getNombre() != null) existente.setNombre(datos.getNombre());
+            if (datos.getApellido() != null) existente.setApellido(datos.getApellido());
+            if (datos.getCorreo() != null) existente.setCorreo(datos.getCorreo());
+            if (datos.getTelefono() != null) existente.setTelefono(datos.getTelefono());
+            if (datos.getNumeroLicencia() != null) existente.setNumeroLicencia(datos.getNumeroLicencia());
+            if (datos.getVehiculo() != null) existente.setVehiculo(datos.getVehiculo());
+            if (datos.getPlaca() != null) existente.setPlaca(datos.getPlaca());
+            if (datos.getDisponible() != null) existente.setDisponible(datos.getDisponible());
+            if (datos.getEstado() != null) existente.setEstado(datos.getEstado());
+            return repartidorRepository.save(existente);
+        });
+    }
+
     public List<Repartidor> listar() {
         return repartidorRepository.findAll();
     }

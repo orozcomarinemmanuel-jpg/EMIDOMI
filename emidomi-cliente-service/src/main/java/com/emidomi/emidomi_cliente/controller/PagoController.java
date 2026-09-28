@@ -29,6 +29,11 @@ public class PagoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/pedido/{idPedido}")
+    public List<Pago> buscarPorPedido(@PathVariable Integer idPedido) {
+        return pagoService.buscarPorPedido(idPedido);
+    }
+
     @PostMapping
     public Pago crear(@RequestBody Pago pago) {
         return pagoService.guardar(pago);

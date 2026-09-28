@@ -26,6 +26,11 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.listar());
     }
 
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<Producto>> listarDisponibles() {
+        return ResponseEntity.ok(productoService.listarDisponibles());
+    }
+
     @GetMapping("/restaurante/{idRestaurante}")
     public ResponseEntity<List<Producto>> listarPorRestaurante(@PathVariable Integer idRestaurante) {
         return ResponseEntity.ok(productoService.listarPorRestaurante(idRestaurante));

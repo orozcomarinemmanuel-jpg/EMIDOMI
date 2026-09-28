@@ -29,8 +29,25 @@ public class PedidoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/cliente/{idCliente}")
+    public List<Pedido> buscarPorCliente(@PathVariable Integer idCliente) {
+        return pedidoService.buscarPorCliente(idCliente);
+    }
+
     @PostMapping
     public Pedido crear(@RequestBody Pedido pedido) {
+        if (pedido.getEstadoPedido() == null) {
+            pedido.setEstadoPedido(Pedido.EstadoPedido.PENDIENTE);
+        }
+        if (pedido.getSubtotal() == null) {
+            pedido.setSubtotal(new java.math.BigDecimal("0.00"));
+        }
+        if (pedido.getCostoDomicilio() == null) {
+            pedido.setCostoDomicilio(new java.math.BigDecimal("0.00"));
+        }
+        if (pedido.getTotal() == null) {
+            pedido.setTotal(new java.math.BigDecimal("0.00"));
+        }
         return pedidoService.guardar(pedido);
     }
 

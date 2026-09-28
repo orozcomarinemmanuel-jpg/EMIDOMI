@@ -35,8 +35,9 @@ public class RepartidorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Repartidor> actualizar(@PathVariable Integer id, @RequestBody Repartidor repartidor) {
-        repartidor.setIdRepartidor(id);
-        return ResponseEntity.ok(repartidorService.guardar(repartidor));
+        return repartidorService.actualizar(id, repartidor)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

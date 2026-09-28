@@ -22,6 +22,10 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    public List<Producto> listarDisponibles() {
+        return productoRepository.findByEstado(true);
+    }
+
     public List<Producto> listarPorRestaurante(Integer idRestaurante) {
         return productoRepository.findByIdRestaurante(idRestaurante);
     }
