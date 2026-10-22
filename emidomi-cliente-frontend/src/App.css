@@ -20,6 +20,16 @@
   margin-bottom: 16px;
 }
 
+.app-container__cargando {
+  background-color: #e8f1fb;
+  color: #1f3864;
+  border: 1px solid #1f3864;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
 .cliente-form {
   display: flex;
   flex-direction: column;
@@ -60,6 +70,13 @@
   background-color: #8a8a8a;
 }
 
+.cliente-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .cliente-list {
   width: 100%;
   border-collapse: collapse;
@@ -87,7 +104,651 @@
   cursor: pointer;
 }
 
+.cliente-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .cliente-list__vacio {
+  font-style: italic;
+  color: #666;
+}
+
+/* ---------------------------------------------------------------------------
+ * Layout general y barra de navegación
+ * --------------------------------------------------------------------------- */
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background-color: #1f3864;
+  color: white;
+  padding: 12px 24px;
+  flex-wrap: wrap;
+}
+
+.navbar__marca {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.5px;
+}
+
+.navbar__enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar__enlace {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #e6ebf5;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.navbar__enlace:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.navbar__enlace.active {
+  background-color: #2e74b5;
+  color: white;
+  font-weight: 600;
+}
+
+.modulo-pendiente {
+  font-style: italic;
+  color: #666;
+  margin-top: 16px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Módulo Restaurante (formulario + tabla), mismo patrón BEM que Cliente
+ * --------------------------------------------------------------------------- */
+
+.restaurante-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.restaurante-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.restaurante-form input,
+.restaurante-form select {
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.restaurante-form__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.restaurante-form__acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2e74b5;
+  color: white;
+  cursor: pointer;
+}
+
+.restaurante-form__acciones button[type="button"] {
+  background-color: #8a8a8a;
+}
+
+.restaurante-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.restaurante-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.restaurante-list th,
+.restaurante-list td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  text-align: left;
+  color: #222;
+  background-color: #ffffff;
+}
+
+.restaurante-list th {
+  background-color: #1f3864;
+  color: white;
+}
+
+.restaurante-list button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.restaurante-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.restaurante-list__vacio {
+  font-style: italic;
+  color: #666;
+}
+
+/* ---------------------------------------------------------------------------
+ * Módulo Producto (formulario + tabla), mismo patrón BEM que los demás
+ * --------------------------------------------------------------------------- */
+
+.producto-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.producto-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.producto-form input,
+.producto-form select {
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.producto-form__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.producto-form__acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2e74b5;
+  color: white;
+  cursor: pointer;
+}
+
+.producto-form__acciones button[type="button"] {
+  background-color: #8a8a8a;
+}
+
+.producto-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.producto-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.producto-list th,
+.producto-list td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  text-align: left;
+  color: #222;
+  background-color: #ffffff;
+}
+
+.producto-list th {
+  background-color: #1f3864;
+  color: white;
+}
+
+.producto-list button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.producto-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.producto-list__vacio {
+  font-style: italic;
+  color: #666;
+}
+
+/* ---------------------------------------------------------------------------
+ * Módulo Repartidor (formulario + tabla), mismo patrón BEM que los demás
+ * --------------------------------------------------------------------------- */
+
+.repartidor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.repartidor-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.repartidor-form input,
+.repartidor-form select {
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.repartidor-form__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.repartidor-form__acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2e74b5;
+  color: white;
+  cursor: pointer;
+}
+
+.repartidor-form__acciones button[type="button"] {
+  background-color: #8a8a8a;
+}
+
+.repartidor-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.repartidor-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.repartidor-list th,
+.repartidor-list td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  text-align: left;
+  color: #222;
+  background-color: #ffffff;
+}
+
+.repartidor-list th {
+  background-color: #1f3864;
+  color: white;
+}
+
+.repartidor-list button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.repartidor-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.repartidor-list__vacio {
+  font-style: italic;
+  color: #666;
+}
+
+/* ---------------------------------------------------------------------------
+ * Módulo Pedido (formulario + tabla), mismo patrón BEM que los demás
+ * --------------------------------------------------------------------------- */
+
+.pedido-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.pedido-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pedido-form input,
+.pedido-form select,
+.pedido-form textarea {
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #fff;
+  font-family: inherit;
+}
+
+.pedido-form textarea {
+  resize: vertical;
+}
+
+.pedido-form__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pedido-form__acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2e74b5;
+  color: white;
+  cursor: pointer;
+}
+
+.pedido-form__acciones button[type="button"] {
+  background-color: #8a8a8a;
+}
+
+.pedido-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.pedido-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pedido-list th,
+.pedido-list td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  text-align: left;
+  color: #222;
+  background-color: #ffffff;
+}
+
+.pedido-list th {
+  background-color: #1f3864;
+  color: white;
+}
+
+.pedido-list button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pedido-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.pedido-list__vacio {
+  font-style: italic;
+  color: #666;
+}
+
+/* ---------------------------------------------------------------------------
+ * Módulo DetallePedido (formulario + tabla), mismo patrón BEM que los demás
+ * --------------------------------------------------------------------------- */
+
+.detalle-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.detalle-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.detalle-form input,
+.detalle-form select {
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.detalle-form input[readonly] {
+  background-color: #eef0f3;
+  color: #444;
+}
+
+.detalle-form__validacion {
+  color: #a12222;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.detalle-form__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.detalle-form__acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2e74b5;
+  color: white;
+  cursor: pointer;
+}
+
+.detalle-form__acciones button[type="button"] {
+  background-color: #8a8a8a;
+}
+
+.detalle-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.detalle-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.detalle-list th,
+.detalle-list td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  text-align: left;
+  color: #222;
+  background-color: #ffffff;
+}
+
+.detalle-list th {
+  background-color: #1f3864;
+  color: white;
+}
+
+.detalle-list button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.detalle-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.detalle-list__vacio {
+  font-style: italic;
+  color: #666;
+}
+
+/* ---------------------------------------------------------------------------
+ * Módulo Pago (formulario + tabla), mismo patrón BEM que los demás
+ * --------------------------------------------------------------------------- */
+
+.pago-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.pago-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pago-form input,
+.pago-form select {
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.pago-form__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pago-form__acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2e74b5;
+  color: white;
+  cursor: pointer;
+}
+
+.pago-form__acciones button[type="button"] {
+  background-color: #8a8a8a;
+}
+
+.pago-form__acciones button:disabled {
+  background-color: #b0b8c4;
+  color: #5a6572;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.pago-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pago-list th,
+.pago-list td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  text-align: left;
+  color: #222;
+  background-color: #ffffff;
+}
+
+.pago-list th {
+  background-color: #1f3864;
+  color: white;
+}
+
+.pago-list button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pago-list button:disabled {
+  background-color: #d0d4da;
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.pago-list__vacio {
   font-style: italic;
   color: #666;
 }

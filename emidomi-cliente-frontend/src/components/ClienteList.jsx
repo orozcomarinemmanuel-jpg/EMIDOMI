@@ -9,8 +9,9 @@
  * @param {Array} clientes - Lista de clientes a mostrar.
  * @param {Function} onEditar - Se ejecuta al dar clic en "Editar", recibe el cliente seleccionado.
  * @param {Function} onEliminar - Se ejecuta al dar clic en "Eliminar", recibe el id del cliente.
+ * @param {boolean} cargando - Indica si hay una petición HTTP en curso (deshabilita las acciones).
  */
-function ClienteList({ clientes, onEditar, onEliminar }) {
+function ClienteList({ clientes, onEditar, onEliminar, cargando = false }) {
   // Caso borde: si todavía no hay clientes cargados o la lista está vacía,
   // se muestra un mensaje en lugar de una tabla vacía.
   if (clientes.length === 0) {
@@ -39,8 +40,15 @@ function ClienteList({ clientes, onEditar, onEliminar }) {
             <td>{cliente.telefono}</td>
             <td>{cliente.direccion}</td>
             <td>
-              <button onClick={() => onEditar(cliente)}>Editar</button>
-              <button onClick={() => onEliminar(cliente.idCliente)}>Eliminar</button>
+              <button onClick={() => onEditar(cliente)} disabled={cargando}>
+                Editar
+              </button>
+              <button
+                onClick={() => onEliminar(cliente.idCliente)}
+                disabled={cargando}
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         ))}

@@ -23,8 +23,9 @@ const CLIENTE_VACIO = {
  * @param {Object|null} clienteEnEdicion - Cliente a editar (null si se va a crear uno nuevo).
  * @param {Function} onGuardar - Función que se ejecuta al enviar el formulario, recibe los datos del cliente.
  * @param {Function} onCancelar - Función para cancelar la edición en curso.
+ * @param {boolean} cargando - Indica si hay una petición HTTP en curso (deshabilita los botones).
  */
-function ClienteForm({ clienteEnEdicion, onGuardar, onCancelar }) {
+function ClienteForm({ clienteEnEdicion, onGuardar, onCancelar, cargando = false }) {
   // Estado local que guarda los valores actuales del formulario.
   const [formulario, setFormulario] = useState(CLIENTE_VACIO);
 
@@ -52,9 +53,17 @@ function ClienteForm({ clienteEnEdicion, onGuardar, onCancelar }) {
   // Envía el formulario: evita el comportamiento por defecto del navegador
   // (recargar la página) y delega el guardado al componente padre (App.jsx),
   // que es quien sabe si debe llamar a "crearCliente" o "actualizarCliente".
+  // Al editar un cliente existente no se envía el campo "contrasena" (el
+  // backend lo marcó como WRITE_ONLY y solo debe recibirse al crear).
   function manejarEnvio(evento) {
     evento.preventDefault();
-    onGuardar(formulario);
+
+    const datosAPagar = { ...formulario };
+    if (clienteEnEdicion) {
+      delete datosAPagar.contrasena;
+    }
+
+    onGuardar(datosAPagar);
   }
 
   return (
@@ -130,13 +139,13 @@ function ClienteForm({ clienteEnEdicion, onGuardar, onCancelar }) {
       />
 
       <div className="cliente-form__acciones">
-        <button type="submit">
-          {clienteEnEdicion ? "Guardar cambios" : "Registrar"}
+        <button type="submit" disabled={cargando}>
+          {cargando ? "Guardando..." : clienteEnEdicion ? "Guardar cambios" : "Registrar"}
         </button>
 
         {/* El botón de cancelar solo tiene sentido cuando se está editando */}
         {clienteEnEdicion && (
-          <button type="button" onClick={onCancelar}>
+          <button type="button" onClick={onCancelar} disabled={cargando}>
             Cancelar
           </button>
         )}

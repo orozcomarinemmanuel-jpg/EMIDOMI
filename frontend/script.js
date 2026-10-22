@@ -56,7 +56,7 @@ if (registroForm) {
     mensaje.textContent = '¡Registro exitoso! Redirigiendo...';
 
     setTimeout(() => {
-      window.location.href = 'login.html';
+      window.location.href = 'index.html';
     }, 2000);
   });
 }
