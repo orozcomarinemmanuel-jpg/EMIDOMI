@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EmiDomi - Perfil</title>
   <link rel="stylesheet" href="perfil.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,20 +14,20 @@
     <!-- ── Header azul ── -->
     <div class="perfil-header">
       <button class="btn-back" onclick="window.location.href='dashboard.html'">
-  <i class="fa-solid fa-arrow-left"></i>
-</button>
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
 
       <div class="perfil-info">
         <div class="avatar-wrapper">
           <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" alt="Foto de perfil">
         </div>
         <div class="perfil-texto">
-          <h2>Emmanuel Orozco</h2>
-          <p>Emmaorozco93@gmail.com</p>
+          <h2 id="perfilNombre">Cargando...</h2>
+          <p id="perfilCorreo">-</p>
         </div>
       </div>
 
-      <button class="btn-edit">
+      <button class="btn-edit" title="Editar perfil">
         <i class="fa-regular fa-pen-to-square"></i>
       </button>
     </div>
@@ -36,28 +37,34 @@
 
       <div class="opcion-item">
         <i class="fa-solid fa-location-dot"></i>
-        <span>Direcciones</span>
-      </div>
-
-      <div class="opcion-item">
-        <i class="fa-regular fa-heart"></i>
-        <span>Favoritos</span>
+        <span>Direcciones: <span id="perfilDireccion">-</span></span>
       </div>
 
       <div class="opcion-item">
         <i class="fa-solid fa-phone"></i>
-        <span>Telefono-Celular</span>
+        <span>Teléfono: <span id="perfilTelefono">-</span></span>
       </div>
 
       <div class="opcion-item">
         <i class="fa-regular fa-envelope"></i>
-        <span>Correo</span>
+        <span>Correo: <span id="perfilCorreo2">-</span></span>
+      </div>
+
+      <div class="opcion-item">
+        <i class="fa-solid fa-city"></i>
+        <span>Ciudad: <span id="perfilCiudad">-</span></span>
       </div>
 
     </div>
 
+    <div style="padding: 16px;">
+      <button id="btnCerrarSesion" style="width:100%; padding:12px; border:none; border-radius:10px; background:#d9534f; color:#fff; font-weight:bold; cursor:pointer;">Cerrar sesión</button>
+      <p id="perfilMsg" style="margin-top:10px; color:#666;"></p>
+    </div>
+
   </div>
 
+  <script src="script.js"></script>
   <script src="perfil.js"></script>
 </body>
 </html>
