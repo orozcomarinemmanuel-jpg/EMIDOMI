@@ -277,6 +277,22 @@ body {
 }
 
 #productsList {
+  width: 100%;
+}
+
+.product-group {
+  margin-bottom: 22px;
+}
+
+.product-group-title {
+  font-size: 16px;
+  color: #333;
+  border-left: 4px solid #007bff;
+  padding-left: 8px;
+  margin-bottom: 10px;
+}
+
+.product-group-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
@@ -346,6 +362,224 @@ body {
 
 .product-status.nodisponible {
   color: #dc3545;
+}
+
+.product-card.no-disponible {
+  opacity: 0.55;
+}
+
+.product-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-add {
+  border: none;
+  background: #007bff;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add:hover {
+  background: #0069d9;
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.qty-btn {
+  border: none;
+  background: #fff;
+  color: #007bff;
+  width: 30px;
+  height: 30px;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.qty-btn:hover {
+  background: #e8efff;
+}
+
+.qty-value {
+  min-width: 26px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.qty-control-sm .qty-btn {
+  width: 26px;
+  height: 26px;
+  font-size: 15px;
+}
+
+/* ── Contador del carrito ── */
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #dc3545;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-count[hidden],
+.cart-panel[hidden],
+.cart-overlay[hidden] {
+  display: none;
+}
+
+/* ── Panel del carrito ── */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 50;
+}
+
+.cart-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 360px;
+  max-width: 100%;
+  background: #fff;
+  box-shadow: -4px 0 18px rgba(0, 0, 0, 0.15);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 12px;
+}
+
+.cart-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-panel-header h2 {
+  font-size: 18px;
+  color: #222;
+}
+
+.cart-close {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  color: #666;
+  cursor: pointer;
+}
+
+.cart-close:hover {
+  color: #222;
+}
+
+.cart-restaurant-name {
+  font-size: 13px;
+  color: #555;
+}
+
+.cart-empty {
+  font-size: 14px;
+  color: #777;
+}
+
+.cart-items {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cart-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.cart-item-price {
+  font-size: 12px;
+  color: #777;
+}
+
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid #eee;
+  padding-top: 12px;
+  font-size: 15px;
+}
+
+.cart-summary strong {
+  color: #28a745;
+  font-size: 18px;
+}
+
+.btn-continuar {
+  border: none;
+  background: #007bff;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-continuar:disabled {
+  background: #b9c7dd;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .cart-panel {
+    width: 100%;
+  }
 }
  
 .restaurant-info {

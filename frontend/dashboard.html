@@ -36,8 +36,9 @@
         <div class="logo-center">
           <img src="img/logo.png" alt="EmiDomi">
         </div>
-        <div class="cart-icon">
+        <div class="cart-icon" id="cartIcon" role="button" tabindex="0" aria-label="Abrir carrito">
           <i class="fa-solid fa-cart-shopping"></i>
+          <span id="cartCount" class="cart-count" hidden>0</span>
         </div>
       </header>
 
@@ -91,6 +92,23 @@
       </section>
     </main>
   </div>
+
+  <!-- ── Carrito ── -->
+  <div id="cartOverlay" class="cart-overlay" hidden></div>
+  <aside id="cartPanel" class="cart-panel" aria-label="Carrito de compras" hidden>
+    <div class="cart-panel-header">
+      <h2>Tu carrito</h2>
+      <button type="button" id="cartClose" class="cart-close" aria-label="Cerrar carrito">&times;</button>
+    </div>
+    <p id="cartRestaurantName" class="cart-restaurant-name" hidden></p>
+    <p id="cartEmpty" class="cart-empty">Tu carrito está vacío.</p>
+    <ul id="cartItems" class="cart-items"></ul>
+    <div class="cart-summary">
+      <span>Subtotal</span>
+      <strong id="cartSubtotal">$ 0</strong>
+    </div>
+    <button type="button" id="btnContinuar" class="btn-continuar" disabled>Próximamente</button>
+  </aside>
 
   <script src="script.js"></script>
   <script src="dashboard.js"></script>
