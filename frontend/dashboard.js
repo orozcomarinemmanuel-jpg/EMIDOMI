@@ -58,41 +58,64 @@ function leerCarrito() {
     if (!Array.isArray(datos)) return [];
     return datos
       .filter(item => item && item.idProducto != null && Number(item.cantidad) > 0)
-      .map(item => ({
-        idProducto: item.idProducto,
-        nombre: item.nombre || 'Producto',
-        precio: Number(item.precio) || 0,
-        cantidad: Math.max(1, Math.floor(Number(item.cantidad))),
-        idRestaurante: item.idRestaurante
-      }));
+      .map(item => {
+        const idRest = item.idRestaurante != null ? item.idRestaurante : item.id_restaurante;
+        const nombreRest = item.nombreRestaurante || item.nombre_restaurante || (idRest != null ? (restaurantesPorId.get(String(idRest)) || '') : '');
+        return {
+          idProducto: item.idProducto,
+          nombre: item.nombre || 'Producto',
+          precio: Number(item.precio) || 0,
+          cantidad: Math.max(1, Math.floor(Number(item.cantidad))),
+          idRestaurante: idRest,
+          nombreRestaurante: nombreRest || ''
+        };
+      });
   } catch (err) {
     return [];
   }
 }
 
 function guardarCarrito(carrito) {
-  localStorage.setItem(CARRITO_KEY, JSON.stringify(carrito));
+  const normalizado = carrito
+    .filter(item => item && item.idProducto != null && Number(item.cantidad) > 0)
+    .map(item => ({
+      idProducto: item.idProducto,
+      nombre: item.nombre || 'Producto',
+      precio: Number(item.precio) || 0,
+      cantidad: Math.max(1, Math.floor(Number(item.cantidad))),
+      idRestaurante: item.idRestaurante,
+      nombreRestaurante: item.nombreRestaurante || (item.idRestaurante != null ? (restaurantesPorId.get(String(item.idRestaurante)) || '') : '')
+    }));
+  localStorage.setItem(CARRITO_KEY, JSON.stringify(normalizado));
   renderCarritoUI();
 }
 
 function agregarProducto(prod) {
-  const idRest = prod.idRestaurante != null ? String(prod.idRestaurante) : String(idRestauranteActual);
-  const carrito = leerCarrito();
-  if (carrito.length > 0 && String(carrito[0].idRestaurante) !== idRest) {
-    const vaciar = window.confirm('Tu carrito tiene productos de otro restaurante. ¿Deseas vaciarlo y empezar uno nuevo?');
-    if (!vaciar) return;
-    carrito.length = 0;
+  const idRest = prod.idRestaurante != null ? prod.idRestaurante : idRestauranteActual;
+  let nombreRest = prod.nombreRestaurante || '';
+  if (!nombreRest && idRest != null) {
+    nombreRest = restaurantesPorId.get(String(idRest)) || '';
   }
+  if (!nombreRest) {
+    const titulo = document.getElementById('productsTitle')?.textContent || '';
+    if (titulo.indexOf('Productos - ') === 0) {
+      nombreRest = titulo.replace('Productos - ', '').trim();
+    }
+  }
+  const carrito = leerCarrito();
   const existente = carrito.find(item => String(item.idProducto) === String(prod.idProducto));
   if (existente) {
     existente.cantidad += 1;
+    if (!existente.nombreRestaurante && nombreRest) existente.nombreRestaurante = nombreRest;
+    if (existente.idRestaurante == null && idRest != null) existente.idRestaurante = idRest;
   } else {
     carrito.push({
       idProducto: prod.idProducto,
       nombre: prod.nombre || 'Producto',
       precio: Number(prod.precio) || 0,
       cantidad: 1,
-      idRestaurante: prod.idRestaurante != null ? prod.idRestaurante : idRestauranteActual
+      idRestaurante: idRest,
+      nombreRestaurante: nombreRest
     });
   }
   guardarCarrito(carrito);
@@ -127,6 +150,7 @@ function actualizarZonasProductos() {
 function renderCarritoUI() {
   const carrito = leerCarrito();
   const totalUnidades = carrito.reduce((total, item) => total + item.cantidad, 0);
+  const totalGeneral = carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
 
   const badge = document.getElementById('cartCount');
   if (badge) {
@@ -134,55 +158,87 @@ function renderCarritoUI() {
     badge.hidden = false;
   }
 
-  const lista = document.getElementById('cartItems');
-  if (lista) {
-    lista.innerHTML = '';
-    carrito.forEach(item => {
-      const li = document.createElement('li');
-      li.className = 'cart-item';
-      li.setAttribute('data-id-producto', String(item.idProducto));
+  const gruposContenedor = document.getElementById('cartGroups');
+  if (gruposContenedor) {
+    gruposContenedor.innerHTML = '';
+    if (carrito.length === 0) {
+      // vacío
+    } else {
+      const grupos = new Map();
+      carrito.forEach(item => {
+        const idRest = item.idRestaurante != null ? String(item.idRestaurante) : 'sin-restaurante';
+        const nombreRest = item.nombreRestaurante && item.nombreRestaurante.trim() !== ''
+          ? item.nombreRestaurante
+          : (item.idRestaurante != null ? (restaurantesPorId.get(String(item.idRestaurante)) || `Restaurante #${item.idRestaurante}`) : 'Sin restaurante');
+        if (!grupos.has(idRest)) grupos.set(idRest, { idRest, nombreRest, items: [] });
+        grupos.get(idRest).items.push(item);
+      });
 
-      const info = document.createElement('div');
-      info.className = 'cart-item-info';
-      const nombre = document.createElement('span');
-      nombre.className = 'cart-item-name';
-      nombre.textContent = item.nombre;
-      const precio = document.createElement('span');
-      precio.className = 'cart-item-price';
-      precio.textContent = `${formatearPrecio(item.precio)} c/u`;
-      info.appendChild(nombre);
-      info.appendChild(precio);
+      Array.from(grupos.values()).forEach(grupo => {
+        const grupoDiv = document.createElement('section');
+        grupoDiv.className = 'cart-group';
+        grupoDiv.setAttribute('data-id-restaurante', grupo.idRest);
 
-      const qty = document.createElement('div');
-      qty.className = 'qty-control qty-control-sm';
-      qty.innerHTML = `<button type="button" class="qty-btn" data-cart-action="dec" aria-label="Quitar una unidad">−</button><span class="qty-value">${item.cantidad}</span><button type="button" class="qty-btn" data-cart-action="inc" aria-label="Agregar una unidad">+</button>`;
+        const header = document.createElement('header');
+        header.className = 'cart-group-header';
+        const titulo = document.createElement('span');
+        titulo.textContent = grupo.nombreRest;
+        header.appendChild(titulo);
+        grupoDiv.appendChild(header);
 
-      li.appendChild(info);
-      li.appendChild(qty);
-      lista.appendChild(li);
-    });
+        const lista = document.createElement('ul');
+        lista.className = 'cart-group-items';
+
+        let subtotalGrupo = 0;
+        grupo.items.forEach(item => {
+          subtotalGrupo += item.precio * item.cantidad;
+          const li = document.createElement('li');
+          li.className = 'cart-item';
+          li.setAttribute('data-id-producto', String(item.idProducto));
+
+          const info = document.createElement('div');
+          info.className = 'cart-item-info';
+          const nombre = document.createElement('span');
+          nombre.className = 'cart-item-name';
+          nombre.textContent = item.nombre;
+          const precio = document.createElement('span');
+          precio.className = 'cart-item-price';
+          precio.textContent = `${formatearPrecio(item.precio)} c/u`;
+          info.appendChild(nombre);
+          info.appendChild(precio);
+
+          const qty = document.createElement('div');
+          qty.className = 'qty-control qty-control-sm';
+          qty.innerHTML = `<button type="button" class="qty-btn" data-cart-action="dec" aria-label="Quitar una unidad">−</button><span class="qty-value">${item.cantidad}</span><button type="button" class="qty-btn" data-cart-action="inc" aria-label="Agregar una unidad">+</button>`;
+
+          li.appendChild(info);
+          li.appendChild(qty);
+          lista.appendChild(li);
+        });
+
+        grupoDiv.appendChild(lista);
+
+        const subtotalDiv = document.createElement('div');
+        subtotalDiv.className = 'cart-group-subtotal';
+        const txt = document.createElement('span');
+        txt.textContent = 'Subtotal';
+        const val = document.createElement('strong');
+        val.textContent = formatearPrecio(subtotalGrupo);
+        subtotalDiv.appendChild(txt);
+        subtotalDiv.appendChild(val);
+        grupoDiv.appendChild(subtotalDiv);
+
+        gruposContenedor.appendChild(grupoDiv);
+      });
+    }
   }
 
   const vacio = document.getElementById('cartEmpty');
   if (vacio) vacio.hidden = carrito.length > 0;
 
-  const nombreRest = document.getElementById('cartRestaurantName');
-  if (nombreRest) {
-    if (carrito.length > 0) {
-      const idRest = carrito[0].idRestaurante;
-      const nombre = restaurantesPorId.get(String(idRest)) || (idRest != null ? `Restaurante #${idRest}` : 'Restaurante');
-      nombreRest.textContent = `Pedido de: ${nombre}`;
-      nombreRest.hidden = false;
-    } else {
-      nombreRest.textContent = '';
-      nombreRest.hidden = true;
-    }
-  }
-
-  const subtotalEl = document.getElementById('cartSubtotal');
-  if (subtotalEl) {
-    const subtotal = carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
-    subtotalEl.textContent = formatearPrecio(subtotal);
+  const totalEl = document.getElementById('cartTotal');
+  if (totalEl) {
+    totalEl.textContent = formatearPrecio(totalGeneral);
   }
 
   const btnContinuar = document.getElementById('btnContinuar');
@@ -313,6 +369,7 @@ function crearCardProducto(prod) {
   const nombreProd = prod.nombre || 'Producto';
   const emojiProd = prod.emoji && String(prod.emoji).trim() !== '' ? String(prod.emoji).trim() : '🍽️';
   const imagenProd = prod.imagen && String(prod.imagen).trim() !== '' ? String(prod.imagen).trim() : null;
+  prod.nombreRestaurante = prod.nombreRestaurante || (idRestauranteActual != null ? (restaurantesPorId.get(String(idRestauranteActual)) || '') : '');
 
   const card = document.createElement('article');
   card.className = 'product-card' + (disponible ? '' : ' no-disponible');
@@ -451,7 +508,7 @@ if (productsListEl) {
     const accion = boton.getAttribute('data-action');
     if (accion === 'add') {
       const prod = productosVisibles.get(String(idProducto));
-      if (prod) agregarProducto(prod);
+      if (prod) agregarProducto(Object.assign({}, prod, { idRestaurante: prod.idRestaurante != null ? prod.idRestaurante : idRestauranteActual }));
     } else if (accion === 'inc') {
       cambiarCantidad(idProducto, 1);
     } else if (accion === 'dec') {
