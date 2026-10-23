@@ -64,6 +64,7 @@ async function cargarRestaurantes() {
     data.forEach(rest => {
       const card = document.createElement('div');
       card.className = 'restaurant-card';
+      card.setAttribute('data-id-restaurante', rest.idRestaurante || '');
       const nombreRest = rest.nombre || 'Restaurante';
       const imgAsignada = obtenerImagenRestaurante(nombreRest);
       const imgSrc = imgAsignada || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&h=100&fit=crop';
@@ -89,6 +90,113 @@ async function cargarRestaurantes() {
       msgEl.textContent = 'No se pudo conectar con el servidor.';
     }
   }
+}
+
+// Cargar productos de un restaurante
+async function cargarProductos(idRestaurante, nombreRestaurante) {
+  const productsSection = document.getElementById('productsSection');
+  const restaurantsSection = document.getElementById('restaurantsSection');
+  const productsList = document.getElementById('productsList');
+  const productsMsg = document.getElementById('productsMsg');
+  const productsTitle = document.getElementById('productsTitle');
+
+  if (restaurantsSection) restaurantsSection.style.display = 'none';
+  if (productsSection) productsSection.style.display = 'block';
+
+  if (productsTitle) productsTitle.textContent = nombreRestaurante ? `Productos - ${nombreRestaurante}` : 'Productos';
+  if (productsList) productsList.innerHTML = '';
+  if (productsMsg) {
+    productsMsg.style.color = '#666';
+    productsMsg.textContent = 'Cargando productos...';
+  }
+
+  try {
+    const url = `${API_BASE}/api/productos/restaurante/${idRestaurante}`;
+    const resp = typeof apiFetch === 'function' ? await apiFetch(url) : await fetch(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('emidomi_token')}` } });
+    if (!resp.ok) {
+      if (productsMsg) {
+        productsMsg.style.color = 'red';
+        productsMsg.textContent = `Error al cargar productos (HTTP ${resp.status})`;
+      }
+      return;
+    }
+    const data = await resp.json();
+    if (productsMsg) productsMsg.textContent = '';
+    if (!Array.isArray(data) || data.length === 0) {
+      if (productsMsg) {
+        productsMsg.style.color = '#666';
+        productsMsg.textContent = 'Este restaurante no tiene productos registrados.';
+      }
+      return;
+    }
+    data.forEach(prod => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      const nombreProd = prod.nombre || 'Producto';
+      const descProd = prod.descripcion || '';
+      const precioProd = prod.precio != null ? `$ ${prod.precio}` : '$ 0';
+      const disponible = prod.estado === true;
+      const imgProd = prod.imagen && prod.imagen.trim() !== '' ? prod.imagen : null;
+      const emojiProd = prod.emoji && prod.emoji.trim() !== '' ? prod.emoji : '🍽️';
+
+      let imgHtml = '';
+      if (imgProd) {
+        imgHtml = `<img class="product-img" src="${imgProd}" alt="${nombreProd}" onerror="this.outerHTML='<div class=\\'product-img\\'>${emojiProd}</div>'">`;
+      } else {
+        imgHtml = `<div class="product-img">${emojiProd}</div>`;
+      }
+
+      card.innerHTML = `
+        ${imgHtml}
+        <div class="product-info">
+          <div>
+            <div class="product-name">${nombreProd}</div>
+            <div class="product-desc">${descProd}</div>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">${precioProd}</span>
+            <span class="product-status ${disponible ? 'disponible' : 'nodisponible'}">${disponible ? 'Disponible' : 'No disponible'}</span>
+          </div>
+        </div>
+      `;
+      const productsList = document.getElementById('productsList');
+      if (productsList) productsList.appendChild(card);
+    });
+  } catch (err) {
+    if (productsMsg) {
+      productsMsg.style.color = 'red';
+      productsMsg.textContent = 'No se pudo conectar con el servidor.';
+    }
+  }
+}
+
+// Delegación de eventos para ir a productos
+const restaurantsListEl = document.getElementById('restaurantsList');
+if (restaurantsListEl) {
+  restaurantsListEl.addEventListener('click', (e) => {
+    const card = e.target.closest('.restaurant-card');
+    if (!card) return;
+    const idRest = card.getAttribute('data-id-restaurante');
+    const nombreRest = card.querySelector('strong')?.textContent || '';
+    if (idRest) {
+      cargarProductos(idRest, nombreRest);
+    }
+  });
+}
+
+// Botón volver
+const btnBack = document.getElementById('btnBackToRestaurants');
+if (btnBack) {
+  btnBack.addEventListener('click', () => {
+    const productsSection = document.getElementById('productsSection');
+    const restaurantsSection = document.getElementById('restaurantsSection');
+    if (productsSection) productsSection.style.display = 'none';
+    if (restaurantsSection) restaurantsSection.style.display = 'block';
+    const productsList = document.getElementById('productsList');
+    if (productsList) productsList.innerHTML = '';
+    const productsMsg = document.getElementById('productsMsg');
+    if (productsMsg) productsMsg.textContent = '';
+  });
 }
 
 // ── Filtros (TODOS / ABIERTOS / CERRADOS) ──

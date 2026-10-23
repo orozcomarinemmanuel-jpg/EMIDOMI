@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EmiDomi - Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,18 +14,17 @@
     <aside class="sidebar">
       <nav>
         <a href="dashboard.html" class="nav-item active">
-  <i class="fa-solid fa-house"></i>
-  <span>Inicio</span>
-</a>
+          <i class="fa-solid fa-house"></i>
+          <span>Inicio</span>
+        </a>
         <a href="dashboard.html" class="nav-item">
           <i class="fa-solid fa-border-all"></i>
           <span>Pedidos</span>
         </a>
         <a href="perfil.html" class="nav-item">
-  <i class="fa-regular fa-user"></i>
-  <span>Perfil</span>
-</a>
-       
+          <i class="fa-regular fa-user"></i>
+          <span>Perfil</span>
+        </a>
       </nav>
     </aside>
 
@@ -75,9 +75,19 @@
       </div>
 
       <!-- Restaurantes -->
-      <section class="restaurants">
+      <section id="restaurantsSection" class="restaurants">
         <p id="restaurantsMsg" style="color:#666; margin:10px 0;">Cargando restaurantes...</p>
         <div id="restaurantsList"></div>
+      </section>
+
+      <!-- Productos del restaurante -->
+      <section id="productsSection" class="products" style="display:none;">
+        <div class="products-header">
+          <button id="btnBackToRestaurants" class="btn-back-rest"><i class="fa-solid fa-arrow-left"></i> Volver a restaurantes</button>
+          <h2 id="productsTitle" class="products-title"></h2>
+        </div>
+        <p id="productsMsg" style="color:#666; margin:10px 0;"></p>
+        <div id="productsList"></div>
       </section>
     </main>
   </div>
