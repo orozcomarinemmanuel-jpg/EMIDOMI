@@ -1,0 +1,64 @@
+RESUMEN DE seed_productos.sql (98 productos, solo INSERT, idempotente)
+
+Restaurantes cubiertos:
+1. Burger House (Comida rápida, Pereira) - 14 productos
+   - Platos principales: 5 (Hamburguesa Doble Carne, Hamburguesa de Pollo Crispy, Combo Burger Personal, Perro Caliente Especial, Alitas BBQ 8 uds)
+   - Entradas: 2 (Nachos con Queso, Aros de Cebolla)
+   - Adicionales: 3 (Papas Rústicas, Extra Queso Cheddar, Tocineta Ahumada)
+   - Bebidas: 3 (Limonada Natural, Malteada de Chocolate, Agua sin Gas 600ml)
+   - Postres: 1 (Brownie con Helado)
+   Precios: $3.000 - $32.000 | disponible=1 | imagen_url=NULL | emoji llenos
+
+2. Pizza Palace (Pizzas, Manizales) - 14 productos
+   - Platos principales: 5 (Pizza Hawaiana Mediana, Cuatro Quesos Mediana, Vegetariana Mediana, Familiar de Carnes, Calzone Jamón y Queso)
+   - Entradas: 2 (Pan de Ajo con Queso, Dedos de Mozzarella 6 uds)
+   - Adicionales: 2 (Extra Queso Mozzarella, Borde Relleno de Queso)
+   - Bebidas: 3 (Gaseosa 1.5 L, Jugo Naranja Natural, Agua con Gas 600ml)
+   - Postres: 2 (Tiramisú, Helado de Vainilla)
+   Precios: $3.000 - $45.000
+
+3. Sabor Casero (Comida típica, Armenia) - 14 productos
+   - Platos principales: 5 (Sancocho de Gallina, Ajiaco Santafereño, Mondongo con Arroz, Arroz con Pollo Casero, Chuleta Cerdo a la Plancha)
+   - Entradas: 2 (Arepa con Queso, Empanadas de Carne 3 uds)
+   - Adicionales: 3 (Porción de Arroz, Porción de Aguacate, Hogao Casero)
+   - Bebidas: 3 (Limonada de Panela, Chocolate con Queso, Agua de Panela)
+   - Postres: 1 (Postre de Natas)
+   Precios: $3.000 - $27.000
+
+4. Sabores de Casa (Comida Casera, Santa Rosa de Cabal) - 14 productos
+   - Platos principales: 5 (Almuerzo Corriente del Día, Pollo Guisado con Arroz, Carne Asada con Papas, Trucha al Ajillo, Pasta con Pollo en Salsa Blanca)
+   - Entradas: 2 (Sopa del Día, Patacones con Hogao 4 uds)
+   - Adicionales: 2 (Porción de Arroz, Ensalada Mixta)
+   - Bebidas: 4 (Jugo Natural en Leche, Limonada Natural, Gaseosa Personal, Agua sin Gas 600ml)
+   - Postres: 1 (Flan de Caramelo)
+   Precios: $3.000 - $24.000
+
+6. Pizzería Don Marco (Pizzería, Chinchiná) - 14 productos
+   - Platos principales: 5 (Pizza Don Marco Especial, Pizza BBQ Pollo, Pizza Napolitana, Pizza Personal de Queso, Lasaña de Carne)
+   - Entradas: 2 (Bruschettas 4 uds, Queso Fundido con Pan)
+   - Adicionales: 2 (Extra Jamón, Borde Relleno de Queso)
+   - Bebidas: 3 (Gaseosa 1.5 L, Limonada de Coco, Agua sin Gas 600ml)
+   - Postres: 2 (Panna Cotta, Brownie con Helado)
+   Precios: $3.000 - $42.000
+
+10. Pizzería La Toscana Actualizada (Italiana, Santa Rosa de Cabal) - 14 productos
+   - Platos principales: 5 (Pizza Toscana Familiar, Pizza Prosciutto, Pasta Carbonara, Pasta Alfredo con Pollo, Risotto de Champiñones)
+   - Entradas: 2 (Carpaccio de Res, Focaccia con Romero)
+   - Adicionales: 3 (Extra Parmesano, Aceitunas Negras, Porción de Pan de Ajo)
+   - Bebidas: 3 (Gaseosa 1.5 L, Agua con Gas 600ml, Limonada Natural)
+   - Postres: 1 (Tiramisú de la Casa)
+   Precios: $3.000 - $44.000
+
+12. Sushi Sakura (Japonesa, Pereira) - 14 productos
+   - Platos principales: 5 (Roll California 10 uds, Roll Frito de Salmón 10 uds, Roll Tempura de Camarón 10 uds, Combo Sakura 24 Piezas, Yakisoba de Pollo)
+   - Entradas: 3 (Gyozas de Cerdo 5 uds, Edamames al Vapor, Sopa Miso)
+   - Adicionales: 2 (Salsa de Soya, Porción de Jengibre y Wasabi)
+   - Bebidas: 3 (Té Verde Frío, Limonada Natural, Agua sin Gas 600ml)
+   - Postres: 1 (Mochi de Helado 2 uds)
+   Precios: $2.000 - $45.000
+
+Notas:
+- Solo INSERT. Usa WHERE NOT EXISTS (id_restaurante + nombre).
+- disponible=1, imagen_url=NULL, emoji llenos.
+- Convive con los 7 productos originales (diferentes nombres/categorías). No los modifica.
+- Ejecutar con utf8mb4 para preservar emojis.
