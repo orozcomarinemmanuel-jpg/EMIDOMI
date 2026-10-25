@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmiDomi - Finalizar pedido</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="checkout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <nav>
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-house"></i>
+          <span>Inicio</span>
+        </a>
+        <a href="pedidos.html" class="nav-item">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Pedidos</span>
+        </a>
+        <a href="perfil.html" class="nav-item">
+          <i class="fa-regular fa-user"></i>
+          <span>Perfil</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content checkout">
+      <header class="top-bar">
+        <div class="logo-center">
+          <img src="img/logo.png" alt="EmiDomi">
+        </div>
+      </header>
+
+      <div class="checkout-head">
+        <a href="dashboard.html" class="btn-back-rest"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+        <h1>Finalizar pedido</h1>
+      </div>
+
+      <section id="formSection" class="checkout-card">
+        <form id="formPedido" novalidate>
+
+          <h2>Entrega</h2>
+          <label class="campo">
+            <span>Dirección de entrega</span>
+            <input id="direccion" type="text" maxlength="255" autocomplete="street-address">
+          </label>
+          <label class="campo">
+            <span>Ciudad</span>
+            <input id="ciudad" type="text" maxlength="100" autocomplete="address-level2">
+          </label>
+          <label class="campo">
+            <span>Notas para el restaurante (opcional)</span>
+            <textarea id="notas" maxlength="500" rows="2"></textarea>
+          </label>
+
+          <h2>Método de pago</h2>
+          <label class="campo">
+            <span>Elige cómo pagar</span>
+            <select id="metodoPago">
+              <option value="">Selecciona un método</option>
+              <option value="efectivo">Efectivo</option>
+              <option value="tarjeta_credito">Tarjeta de crédito</option>
+              <option value="tarjeta_debito">Tarjeta débito</option>
+              <option value="transferencia">Transferencia</option>
+              <option value="nequi">Nequi</option>
+              <option value="daviplata">Daviplata</option>
+            </select>
+          </label>
+          <p class="checkout-hint">
+            Pago simulado: no se realiza ningún cobro real. Efectivo y transferencia quedan pendientes de confirmación.
+          </p>
+
+          <h2>Resumen por restaurante</h2>
+          <div id="resumenGrupos"></div>
+
+          <div class="checkout-total">
+            <span>Total general</span>
+            <strong id="totalGeneral">$ 0</strong>
+          </div>
+          <p class="checkout-hint">Los totales finales los calcula el servidor al confirmar.</p>
+
+          <p id="finalizarMsg" class="checkout-msg"></p>
+          <button type="submit" id="btnConfirmar" class="btn-continuar">Confirmar pedido</button>
+        </form>
+      </section>
+
+      <section id="confirmacion" class="checkout-card" hidden>
+        <h2>¡Pedido confirmado!</h2>
+        <p>Estos son tus pedidos. Se creó un pedido por cada restaurante.</p>
+        <div id="confirmacionLista"></div>
+        <div class="checkout-total">
+          <span>Total pagado</span>
+          <strong id="confirmacionTotal">$ 0</strong>
+        </div>
+        <div class="checkout-acciones">
+          <a href="pedidos.html" class="btn-continuar enlace-boton">Ver mis pedidos</a>
+          <a href="dashboard.html" class="btn-secundario enlace-boton">Seguir comprando</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="checkout.js"></script>
+  <script src="finalizar.js"></script>
+</body>
+</html>
