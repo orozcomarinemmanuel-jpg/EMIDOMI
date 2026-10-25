@@ -243,8 +243,8 @@ function renderCarritoUI() {
 
   const btnContinuar = document.getElementById('btnContinuar');
   if (btnContinuar) {
-    btnContinuar.disabled = true;
-    btnContinuar.textContent = 'Próximamente';
+    btnContinuar.disabled = carrito.length === 0;
+    btnContinuar.textContent = 'Continuar';
   }
 
   actualizarZonasProductos();
@@ -545,6 +545,14 @@ if (cartIconEl) {
 }
 if (cartCloseEl) cartCloseEl.addEventListener('click', cerrarCarrito);
 if (cartOverlayEl) cartOverlayEl.addEventListener('click', cerrarCarrito);
+
+// Continuar: solo navega a finalizar.html si hay productos (no crea pedidos aquí)
+const btnContinuarEl = document.getElementById('btnContinuar');
+if (btnContinuarEl) {
+  btnContinuarEl.addEventListener('click', () => {
+    if (leerCarrito().length > 0) window.location.href = 'finalizar.html';
+  });
+}
 
 if (cartPanelEl) {
   cartPanelEl.addEventListener('click', (e) => {
