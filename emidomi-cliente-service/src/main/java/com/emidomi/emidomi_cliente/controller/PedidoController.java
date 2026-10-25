@@ -64,8 +64,15 @@ public class PedidoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Pedidos de un cliente. Solo se permite consultar el propio id (el del token).
+     * Los roles de administrador se añadirán en la fase del despachador.
+     */
     @GetMapping("/cliente/{idCliente}")
-    public List<Pedido> buscarPorCliente(@PathVariable Integer idCliente) {
+    public List<Pedido> buscarPorCliente(@PathVariable Integer idCliente, Authentication auth) {
+        if (!obtenerIdClienteDelToken(auth).equals(idCliente)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo puedes consultar tus propios pedidos.");
+        }
         return pedidoService.buscarPorCliente(idCliente);
     }
 

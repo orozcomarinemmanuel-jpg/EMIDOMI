@@ -283,6 +283,22 @@ class CheckoutTests {
                 .andExpect(jsonPath("$[0].nombreRestaurante").value("Restaurante A"));
     }
 
+    @Test
+    void get_pedidos_por_cliente_solo_permite_el_propio_id() throws Exception {
+        Cliente otro = crearCliente();
+        String tokenA = jwtUtil.generarToken(cliente.getCorreo(), cliente.getIdCliente());
+
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .get("/api/pedidos/cliente/" + otro.getIdCliente())
+                        .header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .get("/api/pedidos/cliente/" + cliente.getIdCliente())
+                        .header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isOk());
+    }
+
     // ---------- Endpoint HTTP: autenticación y contrato JSON ----------
 
     @Test
