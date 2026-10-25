@@ -30,7 +30,8 @@ public class Producto {
 
     private String emoji;
 
-    @Column(name = "fecha_registro")
+    // La genera MySQL (DEFAULT CURRENT_TIMESTAMP); igual que en Cliente y Restaurante.
+    @Column(name = "fecha_registro", insertable = false, updatable = false)
     private Timestamp fechaRegistro;
 
     public Integer getIdProducto() { return idProducto; }

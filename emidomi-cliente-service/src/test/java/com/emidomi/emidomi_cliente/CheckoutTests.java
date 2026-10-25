@@ -107,9 +107,6 @@ class CheckoutTests {
         p.setPrecio(new BigDecimal(precio));
         p.setCategoria("Platos principales");
         p.setEstado(disponible);
-        // Producto.fechaRegistro no es insertable=false en el modelo actual (fallo previo):
-        // en la prueba se asigna explícitamente para poder insertar.
-        p.setFechaRegistro(new java.sql.Timestamp(System.currentTimeMillis()));
         return productoRepository.save(p);
     }
 
