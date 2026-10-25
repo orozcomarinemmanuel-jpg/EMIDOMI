@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmiDomi - Mis pedidos</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="checkout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <nav>
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-house"></i>
+          <span>Inicio</span>
+        </a>
+        <a href="pedidos.html" class="nav-item active">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Pedidos</span>
+        </a>
+        <a href="perfil.html" class="nav-item">
+          <i class="fa-regular fa-user"></i>
+          <span>Perfil</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content pedidos">
+      <header class="top-bar">
+        <div class="logo-center">
+          <img src="img/logo.png" alt="EmiDomi">
+        </div>
+      </header>
+
+      <div class="pedidos-head">
+        <a href="dashboard.html" class="btn-back-rest"><i class="fa-solid fa-arrow-left"></i> Inicio</a>
+        <h1>Mis pedidos</h1>
+        <span id="ultimaActualizacion" class="pedidos-estado-actual"></span>
+        <button type="button" id="btnActualizar" class="btn-back-rest">Actualizar</button>
+      </div>
+
+      <p id="pedidosMsg" class="checkout-msg"></p>
+      <div id="listaPedidos"><p class="pedidos-vacio">Cargando pedidos...</p></div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="checkout.js"></script>
+  <script src="pedidos.js"></script>
+</body>
+</html>
