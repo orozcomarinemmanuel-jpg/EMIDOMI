@@ -3,8 +3,12 @@ package com.emidomi.emidomi_cliente.repository;
 import com.emidomi.emidomi_cliente.model.DetallePedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface DetallePedidoRepository extends JpaRepository<DetallePedido, Integer> {
     List<DetallePedido> findByIdPedido(Integer idPedido);
+
+    /** Detalles de varios pedidos en una sola consulta. */
+    List<DetallePedido> findByIdPedidoIn(Collection<Integer> idsPedido);
 }

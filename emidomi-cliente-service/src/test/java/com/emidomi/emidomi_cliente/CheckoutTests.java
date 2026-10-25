@@ -60,16 +60,7 @@ class CheckoutTests {
 
     @BeforeEach
     void crearDatos() {
-        Cliente c = new Cliente();
-        c.setNombre("Prueba");
-        c.setApellido("Checkout");
-        c.setCorreo("t-" + UUID.randomUUID() + "@test.com");
-        c.setContrasena("x");
-        c.setTelefono("3000000000");
-        c.setDireccion("Calle 1 #2-3");
-        c.setCiudad("Pereira");
-        c.setEstado(true);
-        cliente = clienteRepository.save(c);
+        cliente = crearCliente();
 
         abiertoA = guardarRestaurante("Restaurante A", true);
         abiertoB = guardarRestaurante("Restaurante B", true);
@@ -80,6 +71,19 @@ class CheckoutTests {
         pizzaB = guardarProducto(abiertoB, "Pizza", "14000.00", true);
         pizzaNoDispB = guardarProducto(abiertoB, "Pizza Especial", "20000.00", false);
         ensaladaCerrado = guardarProducto(cerrado, "Ensalada", "9000.00", true);
+    }
+
+    private Cliente crearCliente() {
+        Cliente c = new Cliente();
+        c.setNombre("Prueba");
+        c.setApellido("Checkout");
+        c.setCorreo("t-" + UUID.randomUUID() + "@test.com");
+        c.setContrasena("x");
+        c.setTelefono("3000000000");
+        c.setDireccion("Calle 1 #2-3");
+        c.setCiudad("Pereira");
+        c.setEstado(true);
+        return clienteRepository.save(c);
     }
 
     private Restaurante guardarRestaurante(String nombre, boolean estado) {
@@ -224,6 +228,59 @@ class CheckoutTests {
                 checkoutService.confirmar(cliente.getIdCliente(), peticion("nequi", grupo(abiertoA, gaseosaA, 0))));
         assertThrows(IllegalArgumentException.class, () ->
                 checkoutService.confirmar(cliente.getIdCliente(), peticion("nequi", grupo(abiertoA, gaseosaA, 100))));
+    }
+
+    // ---------- Listado de pedidos del cliente (B3) ----------
+
+    @Test
+    void listarMios_devuelve_solo_los_pedidos_del_cliente_mas_recientes_primero() {
+        Cliente otro = crearCliente();
+        ConfirmarPedidoResponse primero = checkoutService.confirmar(cliente.getIdCliente(),
+                peticion("efectivo", grupo(abiertoA, gaseosaA, 1)));
+        ConfirmarPedidoResponse segundo = checkoutService.confirmar(cliente.getIdCliente(),
+                peticion("nequi", grupo(abiertoA, hamburguesaA, 1)));
+        checkoutService.confirmar(otro.getIdCliente(), peticion("nequi", grupo(abiertoB, pizzaB, 1)));
+
+        List<com.emidomi.emidomi_cliente.dto.PedidoClienteResponse> mios = checkoutService.listarMios(cliente.getIdCliente());
+
+        assertEquals(2, mios.size());
+        assertEquals(segundo.pedidos().get(0).idPedido(), mios.get(0).idPedido()); // el más reciente primero
+        assertEquals(primero.pedidos().get(0).idPedido(), mios.get(1).idPedido());
+
+        var reciente = mios.get(0);
+        assertEquals("Restaurante A", reciente.nombreRestaurante());
+        assertEquals("PENDIENTE", reciente.estadoPedido());
+        assertEquals(1, reciente.productos().size());
+        assertEquals("Hamburguesa", reciente.productos().get(0).nombre());
+        assertEquals(0, new BigDecimal("28000.00").compareTo(reciente.productos().get(0).precioUnitario()));
+        assertEquals("aprobado", reciente.pago().estadoPago());
+
+        assertEquals("pendiente", mios.get(1).pago().estadoPago()); // el de efectivo
+    }
+
+    @Test
+    void listarMios_sin_pedidos_devuelve_lista_vacia() {
+        assertTrue(checkoutService.listarMios(crearCliente().getIdCliente()).isEmpty());
+    }
+
+    @Test
+    void get_mios_sin_token_no_responde_datos() throws Exception {
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/pedidos/mios"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void get_mios_con_token_devuelve_solo_los_pedidos_de_ese_cliente() throws Exception {
+        Cliente otro = crearCliente();
+        checkoutService.confirmar(cliente.getIdCliente(), peticion("nequi", grupo(abiertoA, gaseosaA, 1)));
+        checkoutService.confirmar(otro.getIdCliente(), peticion("nequi", grupo(abiertoB, pizzaB, 1)));
+
+        String tokenA = jwtUtil.generarToken(cliente.getCorreo(), cliente.getIdCliente());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/pedidos/mios")
+                        .header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].nombreRestaurante").value("Restaurante A"));
     }
 
     // ---------- Endpoint HTTP: autenticación y contrato JSON ----------

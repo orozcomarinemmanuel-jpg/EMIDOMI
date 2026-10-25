@@ -5,7 +5,9 @@ import com.emidomi.emidomi_cliente.dto.ConfirmarPedidoResponse;
 import com.emidomi.emidomi_cliente.dto.GrupoPedidoRequest;
 import com.emidomi.emidomi_cliente.dto.ItemPedidoRequest;
 import com.emidomi.emidomi_cliente.dto.PagoResumenResponse;
+import com.emidomi.emidomi_cliente.dto.PedidoClienteResponse;
 import com.emidomi.emidomi_cliente.dto.PedidoConfirmadoResponse;
+import com.emidomi.emidomi_cliente.dto.ProductoPedidoResponse;
 import com.emidomi.emidomi_cliente.model.Cliente;
 import com.emidomi.emidomi_cliente.model.DetallePedido;
 import com.emidomi.emidomi_cliente.model.Pago;
@@ -161,6 +163,83 @@ public class CheckoutService {
         }
 
         return new ConfirmarPedidoResponse(totalGeneral, resultados);
+    }
+
+    /**
+     * Pedidos del cliente indicado (el id viene del token), más recientes primero.
+     * Consultas en lote: pedidos, detalles, productos, restaurantes y pagos (no una por pedido).
+     */
+    @Transactional(readOnly = true)
+    public List<PedidoClienteResponse> listarMios(Integer idCliente) {
+        List<Pedido> pedidos = pedidoRepository.findByIdClienteOrderByFechaPedidoDescIdPedidoDesc(idCliente);
+        if (pedidos.isEmpty()) {
+            return List.of();
+        }
+
+        List<Integer> idsPedidos = pedidos.stream().map(Pedido::getIdPedido).toList();
+
+        Map<Integer, List<DetallePedido>> detallesPorPedido = detallePedidoRepository.findByIdPedidoIn(idsPedidos).stream()
+                .collect(Collectors.groupingBy(DetallePedido::getIdPedido));
+
+        List<Integer> idsProductos = detallesPorPedido.values().stream()
+                .flatMap(List::stream)
+                .map(DetallePedido::getIdProducto)
+                .distinct()
+                .toList();
+        Map<Integer, String> nombresProductos = productoRepository.findAllById(idsProductos).stream()
+                .collect(Collectors.toMap(Producto::getIdProducto, Producto::getNombre, (a, b) -> a, HashMap::new));
+
+        List<Integer> idsRestaurantes = pedidos.stream()
+                .map(Pedido::getIdRestaurante)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+        Map<Integer, String> nombresRestaurantes = restauranteRepository.findAllById(idsRestaurantes).stream()
+                .collect(Collectors.toMap(Restaurante::getIdRestaurante, Restaurante::getNombre, (a, b) -> a, HashMap::new));
+
+        // Un pedido tiene a lo sumo un pago (pagos.id_pedido es UNIQUE); si hubiera más, se toma el primero.
+        Map<Integer, Pago> pagoPorPedido = pagoRepository.findByIdPedidoIn(idsPedidos).stream()
+                .collect(Collectors.toMap(Pago::getIdPedido, p -> p, (a, b) -> a, HashMap::new));
+
+        List<PedidoClienteResponse> respuesta = new ArrayList<>();
+        for (Pedido pedido : pedidos) {
+            List<ProductoPedidoResponse> productos = detallesPorPedido
+                    .getOrDefault(pedido.getIdPedido(), List.of())
+                    .stream()
+                    .map(d -> new ProductoPedidoResponse(
+                            nombresProductos.getOrDefault(d.getIdProducto(), "Producto eliminado"),
+                            d.getCantidad(),
+                            d.getPrecioUnitario(),
+                            d.getSubtotal()))
+                    .toList();
+
+            Pago pago = pagoPorPedido.get(pedido.getIdPedido());
+            PagoResumenResponse pagoResumen = pago == null ? null : new PagoResumenResponse(
+                    pago.getIdPago(),
+                    pago.getMetodoPago() == null ? null : pago.getMetodoPago().name(),
+                    pago.getEstadoPago() == null ? null : pago.getEstadoPago().name(),
+                    pago.getMonto(),
+                    pago.getReferencia());
+
+            String nombreRestaurante = pedido.getIdRestaurante() == null
+                    ? "Sin restaurante"
+                    : nombresRestaurantes.getOrDefault(pedido.getIdRestaurante(), "Restaurante eliminado");
+
+            respuesta.add(new PedidoClienteResponse(
+                    pedido.getIdPedido(),
+                    nombreRestaurante,
+                    pedido.getEstadoPedido() == null ? null : pedido.getEstadoPedido().name(),
+                    pedido.getSubtotal(),
+                    pedido.getCostoDomicilio(),
+                    pedido.getTotal(),
+                    pedido.getDireccionEntrega(),
+                    pedido.getCiudadEntrega(),
+                    pedido.getNotas(),
+                    pedido.getFechaPedido(),
+                    productos,
+                    pagoResumen));
+        }
+        return respuesta;
     }
 
     // ---------- Validaciones de cabecera ----------

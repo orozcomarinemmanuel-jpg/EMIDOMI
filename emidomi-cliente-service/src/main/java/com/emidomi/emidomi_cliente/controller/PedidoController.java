@@ -2,6 +2,7 @@ package com.emidomi.emidomi_cliente.controller;
 
 import com.emidomi.emidomi_cliente.dto.ConfirmarPedidoRequest;
 import com.emidomi.emidomi_cliente.dto.ConfirmarPedidoResponse;
+import com.emidomi.emidomi_cliente.dto.PedidoClienteResponse;
 import com.emidomi.emidomi_cliente.dto.PedidoRequest;
 import com.emidomi.emidomi_cliente.model.Pedido;
 import com.emidomi.emidomi_cliente.service.CheckoutService;
@@ -36,6 +37,12 @@ public class PedidoController {
         Integer idCliente = obtenerIdClienteDelToken(auth);
         ConfirmarPedidoResponse respuesta = checkoutService.confirmar(idCliente, peticion);
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
+    }
+
+    /** Pedidos del cliente que inició sesión (id tomado del token, más recientes primero). */
+    @GetMapping("/mios")
+    public List<PedidoClienteResponse> misPedidos(Authentication auth) {
+        return checkoutService.listarMios(obtenerIdClienteDelToken(auth));
     }
 
     private Integer obtenerIdClienteDelToken(Authentication auth) {
