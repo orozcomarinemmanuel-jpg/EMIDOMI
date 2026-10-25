@@ -18,7 +18,6 @@ import java.util.List;
  */
 @RestController                      // Combina @Controller + @ResponseBody: cada método devuelve JSON directamente
 @RequestMapping("/api/clientes")     // Prefijo base de todas las rutas de este controller
-@CrossOrigin(origins = "http://localhost:5173")
 public class ClienteController {
 
     private final ClienteService clienteService;
