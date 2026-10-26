@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -142,7 +143,8 @@ class FotoTests {
         mvc.perform(multipart("/api/clientes/15/foto")
                         .file(archivo("gigante.png", grande, "image/png"))
                         .header("Authorization", "Bearer " + tokenDe(15)))
-                .andExpect(status().isPayloadTooLarge());
+                .andExpect(status().isPayloadTooLarge())
+                .andExpect(content().string("La imagen supera el límite de 5 MB."));
     }
 
     @Test
@@ -157,7 +159,8 @@ class FotoTests {
         mvc.perform(multipart("/api/clientes/15/foto")
                         .file(archivo("foto.png", imagen("png"), "image/png"))
                         .header("Authorization", "Bearer " + tokenDe(17)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("Solo puedes cambiar tu propia foto."));
     }
 
     @Test

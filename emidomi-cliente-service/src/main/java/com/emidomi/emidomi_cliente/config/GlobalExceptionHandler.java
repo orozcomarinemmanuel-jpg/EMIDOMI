@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.stream.Collectors;
@@ -34,6 +35,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> manejarCuerpoInvalido(HttpMessageNotReadableException e) {
         return ResponseEntity.badRequest().body("El cuerpo de la petición no es válido o falta información.");
+    }
+
+    /**
+     * Errores lanzados con ResponseStatusException (403 de dueño, 404, 413 de tamaño...).
+     * Se responde el MOTIVO como texto plano, porque el frontend lo muestra tal cual.
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> manejarEstadoHttp(ResponseStatusException e) {
+        String motivo = e.getReason() != null ? e.getReason() : "Error en la petición.";
+        return ResponseEntity.status(e.getStatusCode()).body(motivo);
     }
 
     /** Spring rechaza la subida si supera spring.servlet.multipart.max-file-size (5 MB) o max-request-size (6 MB). */
