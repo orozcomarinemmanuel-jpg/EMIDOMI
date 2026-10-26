@@ -2,14 +2,19 @@ package com.emidomi.emidomi_cliente.controller;
 
 import com.emidomi.emidomi_cliente.model.Cliente;
 import com.emidomi.emidomi_cliente.service.ClienteService;
+import com.emidomi.emidomi_cliente.service.FotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,10 +29,29 @@ import java.util.Objects;
 public class ClienteController {
 
     private final ClienteService clienteService;
+    private final FotoService fotoService;
 
     @Autowired
-    public ClienteController(ClienteService clienteService) {
+    public ClienteController(ClienteService clienteService, FotoService fotoService) {
         this.clienteService = clienteService;
+        this.fotoService = fotoService;
+    }
+
+    /**
+     * POST /api/clientes/{id}/foto
+     * Sube la foto de perfil (multipart, campo "foto"). Solo el propio cliente puede subirla.
+     * La validación real del archivo (tipo por contenido, tamaño) está en FotoService.
+     */
+    @PostMapping(value = "/{id}/foto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> subirFoto(@PathVariable Integer id,
+                                       @RequestParam("foto") MultipartFile foto,
+                                       Authentication auth) throws IOException {
+        Integer idDelToken = obtenerIdClienteDelToken(auth);
+        if (!Objects.equals(idDelToken, id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo puedes cambiar tu propia foto.");
+        }
+        String fotoUrl = fotoService.guardarFoto(id, foto);
+        return new ResponseEntity<>(Map.of("fotoUrl", fotoUrl), HttpStatus.OK); // 200
     }
 
     /**
