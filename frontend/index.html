@@ -30,5 +30,18 @@
     <p id="loginMessage"></p>
   </div>
   <script src="script.js"></script>
+  <script>
+    // Aviso que deja perfil.js al cambiar el correo (la sesión se cierra y hay que entrar de nuevo)
+    (function mostrarAvisoPendiente() {
+      const aviso = sessionStorage.getItem('emidomi_aviso');
+      if (!aviso) return;
+      sessionStorage.removeItem('emidomi_aviso');
+      const msg = document.getElementById('loginMessage');
+      if (msg) {
+        msg.style.color = '#b26a00';
+        msg.textContent = aviso;
+      }
+    })();
+  </script>
 </body>
 </html>

@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <div class="perfil-container">
+  <div class="perfil-container" id="perfilContainer">
 
     <!-- ── Header azul ── -->
     <div class="perfil-header">
@@ -27,34 +27,62 @@
         </div>
       </div>
 
-      <button class="btn-edit" title="Editar perfil">
+      <button class="btn-edit" id="btnEditar" title="Editar perfil" disabled>
         <i class="fa-regular fa-pen-to-square"></i>
       </button>
     </div>
 
-    <!-- ── Opciones ── -->
+    <!-- ── Datos del cliente: en lectura se muestran; en edición aparecen los campos ── -->
     <div class="perfil-opciones">
 
-      <div class="opcion-item">
-        <i class="fa-solid fa-location-dot"></i>
-        <span>Direcciones: <span id="perfilDireccion">-</span></span>
+      <div class="perfil-campo">
+        <i class="fa-regular fa-user"></i>
+        <label for="inputNombre">Nombre</label>
+        <span class="valor" id="valorNombre">-</span>
+        <input type="text" id="inputNombre" maxlength="100" autocomplete="given-name">
       </div>
 
-      <div class="opcion-item">
-        <i class="fa-solid fa-phone"></i>
-        <span>Teléfono: <span id="perfilTelefono">-</span></span>
+      <div class="perfil-campo">
+        <i class="fa-regular fa-user"></i>
+        <label for="inputApellido">Apellido</label>
+        <span class="valor" id="valorApellido">-</span>
+        <input type="text" id="inputApellido" maxlength="100" autocomplete="family-name">
       </div>
 
-      <div class="opcion-item">
+      <div class="perfil-campo">
         <i class="fa-regular fa-envelope"></i>
-        <span>Correo: <span id="perfilCorreo2">-</span></span>
+        <label for="inputCorreo">Correo</label>
+        <span class="valor" id="valorCorreo">-</span>
+        <input type="email" id="inputCorreo" maxlength="150" autocomplete="email">
       </div>
 
-      <div class="opcion-item">
+      <div class="perfil-campo">
+        <i class="fa-solid fa-phone"></i>
+        <label for="inputTelefono">Teléfono</label>
+        <span class="valor" id="valorTelefono">-</span>
+        <input type="tel" id="inputTelefono" maxlength="20" autocomplete="tel">
+      </div>
+
+      <div class="perfil-campo">
+        <i class="fa-solid fa-location-dot"></i>
+        <label for="inputDireccion">Dirección</label>
+        <span class="valor" id="valorDireccion">-</span>
+        <input type="text" id="inputDireccion" maxlength="255" autocomplete="street-address">
+      </div>
+
+      <div class="perfil-campo">
         <i class="fa-solid fa-city"></i>
-        <span>Ciudad: <span id="perfilCiudad">-</span></span>
+        <label for="inputCiudad">Ciudad</label>
+        <span class="valor" id="valorCiudad">-</span>
+        <input type="text" id="inputCiudad" maxlength="100" autocomplete="address-level2">
       </div>
 
+    </div>
+
+    <!-- Botones de edición: solo visibles en modo edición -->
+    <div class="perfil-acciones">
+      <button type="button" id="btnCancelar" class="btn-perfil btn-perfil-secundario">Cancelar</button>
+      <button type="button" id="btnGuardar" class="btn-perfil btn-perfil-principal">Guardar</button>
     </div>
 
     <div style="padding: 16px;">

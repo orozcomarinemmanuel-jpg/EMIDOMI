@@ -146,3 +146,103 @@ body {
   font-size: 16px;
   color: #222;
 }
+
+/* ── Datos del cliente (lectura / edición) ── */
+.perfil-campo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 32px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.perfil-campo:last-child {
+  border-bottom: none;
+}
+
+.perfil-campo > i {
+  font-size: 20px;
+  color: #222;
+  width: 26px;
+  text-align: center;
+}
+
+.perfil-campo label {
+  min-width: 90px;
+  font-size: 14px;
+  color: #666;
+}
+
+.perfil-campo .valor {
+  flex: 1;
+  font-size: 16px;
+  color: #222;
+  word-break: break-word;
+}
+
+/* En lectura, los campos están ocultos */
+.perfil-campo input {
+  display: none;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.perfil-campo input:focus {
+  outline: 2px solid #007bff;
+  border-color: #007bff;
+}
+
+/* Modo edición: se ocultan los valores y se muestran los campos */
+.editando .perfil-campo .valor {
+  display: none;
+}
+
+.editando .perfil-campo input {
+  display: block;
+}
+
+.perfil-acciones {
+  display: none;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 32px 0;
+}
+
+.editando .perfil-acciones {
+  display: flex;
+}
+
+.btn-perfil {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #007bff;
+}
+
+.btn-perfil-principal {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn-perfil-principal:disabled {
+  background: #b9c7dd;
+  border-color: #b9c7dd;
+  cursor: not-allowed;
+}
+
+.btn-perfil-secundario {
+  background: #fff;
+  color: #007bff;
+}
+
+.btn-edit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
