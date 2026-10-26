@@ -5,9 +5,12 @@ import com.emidomi.emidomi_cliente.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Controlador REST para el módulo Cliente.
@@ -67,15 +70,35 @@ public class ClienteController {
     /**
      * PUT /api/clientes/{id}
      * Actualiza los datos de un cliente existente.
+     * Solo puede editarse a sí mismo: el id de la ruta debe coincidir con el id del token.
+     * La comprobación se hace ANTES de buscar el cliente, así un usuario no puede
+     * descubrir qué ids existen probando.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarCliente(@PathVariable Integer id, @RequestBody Cliente cliente) {
+    public ResponseEntity<?> actualizarCliente(@PathVariable Integer id,
+                                               @RequestBody Cliente cliente,
+                                               Authentication auth) {
+        Integer idDelToken = obtenerIdClienteDelToken(auth);
+        if (!Objects.equals(idDelToken, id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo puedes editar tus propios datos.");
+        }
         try {
             Cliente clienteActualizado = clienteService.actualizarCliente(id, cliente);
             return new ResponseEntity<>(clienteActualizado, HttpStatus.OK); // 200
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
         }
+    }
+
+    /**
+     * Lee el idCliente que JwtAuthFilter guardó en auth.getDetails() a partir del token.
+     * Si no hay un id válido en el token, responde 401.
+     */
+    private Integer obtenerIdClienteDelToken(Authentication auth) {
+        if (auth == null || !(auth.getDetails() instanceof Integer idCliente)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token sin idCliente válido.");
+        }
+        return idCliente;
     }
 
     /**
