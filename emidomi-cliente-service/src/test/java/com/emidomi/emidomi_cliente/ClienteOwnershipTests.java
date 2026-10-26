@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -80,6 +81,43 @@ class ClienteOwnershipTests {
                         .contentType("application/json")
                         .content(cuerpoActual(c15)))
                 .andExpect(status().isForbidden());
+    }
+
+    /** Cuerpo PUT con los datos actuales pero con otro correo. */
+    private String cuerpoConCorreo(Cliente c, String correo) {
+        return """
+                {"nombre":"%s","apellido":"%s","correo":"%s","telefono":"%s","direccion":"%s","ciudad":"%s"}
+                """.formatted(c.getNombre(), c.getApellido(), correo,
+                c.getTelefono(), c.getDireccion(), c.getCiudad());
+    }
+
+    @Test
+    void correo_propio_se_permite_aunque_cambie_mayusculas_200() throws Exception {
+        Cliente c15 = cargar(15);
+        String token = jwtUtil.generarToken(c15.getCorreo(), 15);
+
+        mvc.perform(put("/api/clientes/15")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType("application/json")
+                        .content(cuerpoConCorreo(c15, c15.getCorreo().toUpperCase())))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void correo_de_otro_cliente_responde_409_con_mensaje_claro() throws Exception {
+        Cliente c15 = cargar(15);
+        Cliente c17 = cargar(17);
+        String token = jwtUtil.generarToken(c15.getCorreo(), 15);
+
+        mvc.perform(put("/api/clientes/15")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType("application/json")
+                        .content(cuerpoConCorreo(c15, c17.getCorreo())))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("Ya existe un cliente registrado con ese correo."));
+
+        // El cliente 15 no cambió su correo
+        assertEquals(c15.getCorreo(), cargar(15).getCorreo());
     }
 
     @Test

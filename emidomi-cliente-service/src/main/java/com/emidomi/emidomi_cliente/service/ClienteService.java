@@ -35,7 +35,7 @@ public class ClienteService {
                 .anyMatch(c -> c.getCorreo().equalsIgnoreCase(cliente.getCorreo()));
 
         if (correoExiste) {
-            throw new IllegalArgumentException("Ya existe un cliente registrado con ese correo.");
+            throw new IllegalArgumentException(CorreoDuplicadoException.MENSAJE);
         }
 
         return clienteRepository.save(cliente);
@@ -63,6 +63,12 @@ public class ClienteService {
     public Cliente actualizarCliente(Integer id, Cliente datosActualizados) {
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con id: " + id));
+
+        // Regla: el correo puede repetirse solo con el propio cliente. Si pertenece a otro, 409.
+        if (datosActualizados.getCorreo() != null
+                && clienteRepository.existsByCorreoIgnoreCaseAndIdClienteNot(datosActualizados.getCorreo(), id)) {
+            throw new CorreoDuplicadoException();
+        }
 
         clienteExistente.setNombre(datosActualizados.getNombre());
         clienteExistente.setApellido(datosActualizados.getApellido());

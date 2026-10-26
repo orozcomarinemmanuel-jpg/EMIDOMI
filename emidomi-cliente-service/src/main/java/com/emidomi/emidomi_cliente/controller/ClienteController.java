@@ -2,6 +2,7 @@ package com.emidomi.emidomi_cliente.controller;
 
 import com.emidomi.emidomi_cliente.model.Cliente;
 import com.emidomi.emidomi_cliente.service.ClienteService;
+import com.emidomi.emidomi_cliente.service.CorreoDuplicadoException;
 import com.emidomi.emidomi_cliente.service.FotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -112,6 +113,15 @@ public class ClienteController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
         }
+    }
+
+    /**
+     * Correo que ya pertenece a otro cliente: 409 con el mensaje en texto plano
+     * (el mismo que el registro). El frontend lo muestra tal cual.
+     */
+    @ExceptionHandler(CorreoDuplicadoException.class)
+    public ResponseEntity<String> correoDuplicado(CorreoDuplicadoException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT); // 409
     }
 
     /**

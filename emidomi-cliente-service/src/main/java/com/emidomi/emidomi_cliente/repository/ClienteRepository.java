@@ -25,4 +25,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 // Busca un cliente por su correo electrónico (lo usamos para login y para
 // verificar que no se registre un correo duplicado)
     Optional<Cliente> findByCorreo(String correo);
+
+    // ¿Existe OTRO cliente (distinto de idCliente) con este correo, sin importar mayúsculas?
+    // Sirve al editar: el propio cliente puede conservar su correo.
+    boolean existsByCorreoIgnoreCaseAndIdClienteNot(String correo, Integer idCliente);
 }
