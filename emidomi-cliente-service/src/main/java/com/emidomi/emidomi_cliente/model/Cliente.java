@@ -46,6 +46,11 @@ public class Cliente {
     @Column(name = "estado", nullable = false)
     private Boolean estado = true;     // true = activo (1), false = inactivo (0)
 
+    // Ruta pública de la foto de perfil (ej. /uploads/clientes/5/uuid.jpg). Null = sin foto.
+    // Columna añadida con ALTER TABLE antes de este cambio.
+    @Column(name = "foto_url", length = 255)
+    private String fotoUrl;
+
     // ----------------------------------------------------------
     // Constructores
     // ----------------------------------------------------------
@@ -143,5 +148,13 @@ public class Cliente {
 
     public void setEstado(Boolean estado) {
         this.estado = estado;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 }
