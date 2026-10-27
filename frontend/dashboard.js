@@ -358,6 +358,9 @@ async function cargarProductos(idRestaurante, nombreRestaurante) {
 
   if (restaurantsSection) restaurantsSection.style.display = 'none';
   if (productsSection) productsSection.style.display = 'block';
+  // Los filtros de estado solo aplican a la lista de restaurantes: se ocultan dentro del menu
+  const filtrosEl = document.getElementById('filtrosEstado');
+  if (filtrosEl) filtrosEl.style.display = 'none';
 
   if (productsTitle) productsTitle.textContent = nombreRestaurante ? `Productos - ${nombreRestaurante}` : 'Productos';
   if (productsList) productsList.innerHTML = '';
@@ -524,6 +527,9 @@ if (btnBack) {
     const restaurantsSection = document.getElementById('restaurantsSection');
     if (productsSection) productsSection.style.display = 'none';
     if (restaurantsSection) restaurantsSection.style.display = 'block';
+    // Al volver, la fila de filtros reaparece con la categoría y el estado que ya estaban elegidos
+    const filtrosEl = document.getElementById('filtrosEstado');
+    if (filtrosEl) filtrosEl.style.display = '';
     const productsList = document.getElementById('productsList');
     if (productsList) productsList.innerHTML = '';
     const productsMsg = document.getElementById('productsMsg');

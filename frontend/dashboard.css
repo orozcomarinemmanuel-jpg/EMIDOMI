@@ -166,6 +166,9 @@ body {
  
 /* ── Filtros ── */
 .filters {
+  /* No dejar que la columna principal aplaste esta fila: sin esto, con la página
+     más alta que la ventana, la fila se reduce a 2 px y sus botones quedan ocultos */
+  flex-shrink: 0;
   display: flex;
   gap: 0;
   margin-bottom: 24px;
