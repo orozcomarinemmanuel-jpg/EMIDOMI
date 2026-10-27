@@ -18,9 +18,15 @@
       </button>
 
       <div class="perfil-info">
-        <div class="avatar-wrapper">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" alt="Foto de perfil">
+        <!-- Tocar la foto (o el botón de cámara) abre el selector de archivos -->
+        <div class="avatar-wrapper" id="avatarWrapper" title="Cambiar foto de perfil">
+          <img id="fotoPerfil" src="img/avatar-default.svg" alt="Foto de perfil">
+          <button type="button" class="btn-camara" id="btnCambiarFoto" aria-label="Cambiar foto de perfil">
+            <i class="fa-solid fa-camera"></i>
+          </button>
         </div>
+        <!-- En el celular ofrece galería o cámara; en PC abre el explorador de archivos -->
+        <input type="file" id="inputFoto" accept="image/*" hidden>
         <div class="perfil-texto">
           <h2 id="perfilNombre">Cargando...</h2>
           <p id="perfilCorreo">-</p>
@@ -30,6 +36,16 @@
       <button class="btn-edit" id="btnEditar" title="Editar perfil" disabled>
         <i class="fa-regular fa-pen-to-square"></i>
       </button>
+    </div>
+
+    <!-- ── Vista previa de la foto nueva (solo aparece después de elegir una imagen) ── -->
+    <div class="foto-preview" id="fotoPreviewBox" hidden>
+      <img id="fotoPreview" alt="Vista previa de la foto">
+      <p>Vista previa. Así se verá tu foto de perfil.</p>
+      <div class="foto-acciones">
+        <button type="button" id="btnCancelarFoto" class="btn-perfil btn-perfil-secundario">Cancelar</button>
+        <button type="button" id="btnGuardarFoto" class="btn-perfil btn-perfil-principal">Guardar foto</button>
+      </div>
     </div>
 
     <!-- ── Datos del cliente: en lectura se muestran; en edición aparecen los campos ── -->

@@ -13,11 +13,25 @@ const CAMPOS_PERFIL = ['nombre', 'apellido', 'correo', 'telefono', 'direccion', 
 let clienteActual = null; // último cliente recibido del backend (base para Cancelar y para detectar cambios)
 let guardando = false;
 
+// ── Foto de perfil (F2) ──
+const FOTO_DEFECTO = 'img/avatar-default.svg';   // imagen local si el cliente no tiene foto
+const TAMANO_MAX_FOTO = 5 * 1024 * 1024;          // 5 MB; el backend también lo valida
+let archivoFotoPendiente = null;                  // imagen elegida, todavía no enviada
+let urlVistaPrevia = null;                        // URL temporal para la vista previa
+let subiendoFoto = false;
+
 const contenedorPerfil = document.getElementById('perfilContainer');
 const btnEditar = document.getElementById('btnEditar');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnCancelar = document.getElementById('btnCancelar');
 const perfilMsg = document.getElementById('perfilMsg');
+const avatarWrapper = document.getElementById('avatarWrapper');
+const inputFoto = document.getElementById('inputFoto');
+const fotoPerfil = document.getElementById('fotoPerfil');
+const fotoPreviewBox = document.getElementById('fotoPreviewBox');
+const fotoPreview = document.getElementById('fotoPreview');
+const btnGuardarFoto = document.getElementById('btnGuardarFoto');
+const btnCancelarFoto = document.getElementById('btnCancelarFoto');
 
 // El id se valida antes de usarlo: solo dígitos.
 function idClienteGuardado() {
@@ -95,6 +109,7 @@ async function cargarPerfil() {
     }
     clienteActual = await resp.json();
     pintarDatos(clienteActual);
+    mostrarFoto(clienteActual.fotoUrl);
     btnEditar.disabled = false;
     mostrarMensaje('');
   } catch (err) {
@@ -147,6 +162,110 @@ async function guardarCambios() {
     btnGuardar.disabled = false;
   }
 }
+
+// ── Foto de perfil (F2) ──
+
+// Muestra la foto guardada desde el backend, o la imagen por defecto si no hay.
+// Si la URL falla al cargar, también cae a la imagen por defecto (nunca una imagen rota).
+// El parámetro ?v= evita que el navegador muestre la foto anterior en caché tras subir una nueva.
+function mostrarFoto(fotoUrl, recargarCache = false) {
+  fotoPerfil.onerror = () => {
+    fotoPerfil.onerror = null;
+    fotoPerfil.src = FOTO_DEFECTO;
+  };
+  if (!fotoUrl) {
+    fotoPerfil.src = FOTO_DEFECTO;
+    return;
+  }
+  fotoPerfil.src = `${API_BASE}${fotoUrl}` + (recargarCache ? `?v=${Date.now()}` : '');
+}
+
+function limpiarSeleccionFoto() {
+  inputFoto.value = '';           // permite volver a elegir el mismo archivo
+  archivoFotoPendiente = null;
+  if (urlVistaPrevia) {
+    URL.revokeObjectURL(urlVistaPrevia);
+    urlVistaPrevia = null;
+  }
+  fotoPreviewBox.hidden = true;
+}
+
+// Se llama al elegir un archivo. La validación aquí es solo para avisar rápido;
+// la validación real (tipo por contenido y tamaño) la hace el backend.
+function alElegirFoto() {
+  const archivo = inputFoto.files[0];
+  if (!archivo) return;
+
+  if (!archivo.type.startsWith('image/')) {
+    mostrarMensaje('Elige un archivo de imagen (JPG, PNG o WebP).');
+    limpiarSeleccionFoto();
+    return;
+  }
+  if (archivo.size > TAMANO_MAX_FOTO) {
+    mostrarMensaje('La imagen supera 5 MB. Elige una más pequeña.');
+    limpiarSeleccionFoto();
+    return;
+  }
+
+  archivoFotoPendiente = archivo;
+  if (urlVistaPrevia) URL.revokeObjectURL(urlVistaPrevia);
+  urlVistaPrevia = URL.createObjectURL(archivo);
+  fotoPreview.src = urlVistaPrevia;
+  fotoPreviewBox.hidden = false;
+  mostrarMensaje('');
+}
+
+// Envía la imagen con POST /api/clientes/{id}/foto.
+// FormData arma el cuerpo multipart; NO se pone Content-Type a mano (el navegador
+// añade el boundary). apiFetch solo añade JSON cuando el cuerpo es texto.
+async function guardarFoto() {
+  if (!archivoFotoPendiente || subiendoFoto) return;
+  const id = idClienteGuardado();
+  if (!id) return;
+
+  const formulario = new FormData();
+  formulario.append('foto', archivoFotoPendiente);
+
+  subiendoFoto = true;
+  btnGuardarFoto.disabled = true;
+  mostrarMensaje('Subiendo foto...', true);
+  try {
+    const resp = await apiFetch(`${API_BASE}/api/clientes/${id}/foto`, {
+      method: 'POST',
+      body: formulario
+    });
+    if (!resp.ok) {
+      // Motivo real del backend (tipo no válido, más de 5 MB, etc.)
+      mostrarMensaje(await resp.text() || `No se pudo subir la foto (HTTP ${resp.status}).`);
+      return;
+    }
+    const datos = await resp.json();
+    clienteActual.fotoUrl = datos.fotoUrl;
+    mostrarFoto(datos.fotoUrl, true);
+    limpiarSeleccionFoto();
+    mostrarMensaje('Foto de perfil actualizada.', true);
+  } catch (err) {
+    mostrarMensaje('No se pudo conectar con el servidor. La foto no se guardó.');
+  } finally {
+    subiendoFoto = false;
+    btnGuardarFoto.disabled = false;
+  }
+}
+
+function cancelarFoto() {
+  limpiarSeleccionFoto();
+  mostrarFoto(clienteActual ? clienteActual.fotoUrl : null);
+  mostrarMensaje('');
+}
+
+// Tocar la foto o el botón de cámara abre el selector (galería o cámara en el celular)
+avatarWrapper.addEventListener('click', () => {
+  if (!clienteActual) return; // no cambiar la foto mientras no haya datos cargados
+  inputFoto.click();
+});
+inputFoto.addEventListener('change', alElegirFoto);
+btnGuardarFoto.addEventListener('click', guardarFoto);
+btnCancelarFoto.addEventListener('click', cancelarFoto);
 
 btnEditar.addEventListener('click', entrarModoEdicion);
 btnCancelar.addEventListener('click', () => {
