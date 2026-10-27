@@ -31,6 +31,11 @@ public class Restaurante {
     @Column(length = 100)
     private String categoria;
 
+    // Categoría de la barra del dashboard: comidas_rapidas | bebidas | postres | fruver.
+    // NULL = el restaurante no aparece en ningún círculo de categoría. Columna creada con ALTER TABLE.
+    @Column(name = "categoria_general", length = 30)
+    private String categoriaGeneral;
+
     @Column(precision = 3, scale = 2)
     private BigDecimal calificacion;
 
@@ -60,6 +65,9 @@ public class Restaurante {
 
     public String getCategoria() { return categoria; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
+
+    public String getCategoriaGeneral() { return categoriaGeneral; }
+    public void setCategoriaGeneral(String categoriaGeneral) { this.categoriaGeneral = categoriaGeneral; }
 
     public BigDecimal getCalificacion() { return calificacion; }
     public void setCalificacion(BigDecimal calificacion) { this.calificacion = calificacion; }
