@@ -11,6 +11,7 @@
 -- simplemente omite el ALTER y ejecuta el resto.
 -- ============================================================
 
+USE db_domicilios;
 SET NAMES utf8mb4;
 
 -- 1) DDL: en MySQL no es transaccional, por eso va fuera del START TRANSACTION
