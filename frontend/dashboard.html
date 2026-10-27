@@ -50,29 +50,30 @@
 
       <!-- Categorías -->
       <section class="categories">
-        <div class="category-item active">
+        <!-- data-categoria debe coincidir con restaurantes.categoria_general en la base de datos -->
+        <div class="category-item" data-categoria="comidas_rapidas">
           <div class="category-icon">🍔</div>
           <span>Comidas rápidas</span>
         </div>
-        <div class="category-item">
+        <div class="category-item" data-categoria="bebidas">
           <div class="category-icon">🥤</div>
           <span>Bebidas</span>
         </div>
-        <div class="category-item">
+        <div class="category-item" data-categoria="postres">
           <div class="category-icon">🍨</div>
           <span>Postres</span>
         </div>
-        <div class="category-item">
+        <div class="category-item" data-categoria="fruver">
           <div class="category-icon">🥑</div>
           <span>Fruver</span>
         </div>
       </section>
 
-      <!-- Filtros -->
+      <!-- Filtros de estado -->
       <div class="filters">
-        <button class="filter-btn active">TODOS</button>
-        <button class="filter-btn open">ABIERTOS</button>
-        <button class="filter-btn closed">CERRADOS</button>
+        <button class="filter-btn active" data-estado="todos">TODOS</button>
+        <button class="filter-btn open" data-estado="abiertos">ABIERTOS</button>
+        <button class="filter-btn closed" data-estado="cerrados">CERRADOS</button>
       </div>
 
       <!-- Restaurantes -->

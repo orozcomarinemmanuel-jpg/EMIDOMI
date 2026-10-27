@@ -12,7 +12,10 @@ const RESTAURANT_IMAGES = [
   { key: 'pizzeriadonmarco', img: 'img/pizzeriadonmarco.png' },
   { key: 'pizzerialatoscana', img: 'img/latoscana.png' },
   { key: 'latoscana', img: 'img/latoscana.png' },
-  { key: 'sushisakura', img: 'img/sushisakura.png' }
+  { key: 'sushisakura', img: 'img/sushisakura.png' },
+  // Temporales (SVG propios, sin derechos de autor)
+  { key: 'batidosdelparque', img: 'img/restaurantes/batidos-del-parque.svg' },
+  { key: 'cafearomaandino', img: 'img/restaurantes/cafe-aroma-andino.svg' }
 ];
 
 function normalizarNombre(nombre) {
@@ -250,11 +253,73 @@ function renderCarritoUI() {
   actualizarZonasProductos();
 }
 
-// Cargar restaurantes reales
-async function cargarRestaurantes() {
+// ── Restaurantes: datos, filtros y dibujo de tarjetas ──
+let restaurantesCargados = [];  // lista completa que devuelve GET /api/restaurantes
+let filtroCategoria = null;     // null = todas; o 'comidas_rapidas' | 'bebidas' | 'postres' | 'fruver'
+let filtroEstado = 'todos';     // 'todos' | 'abiertos' | 'cerrados'
+
+// Dibuja las tarjetas aplicando los dos filtros a la vez (categoría y estado).
+// Se llama cada vez que cambia un filtro; no vuelve a pedir datos al servidor.
+function renderRestaurantes() {
   const listEl = document.getElementById('restaurantsList');
   const msgEl = document.getElementById('restaurantsMsg');
   if (!listEl) return;
+  listEl.innerHTML = '';
+
+  // 1) Filtro por categoría: compara el valor de la base con el del círculo tocado
+  const deCategoria = filtroCategoria
+    ? restaurantesCargados.filter(r => r.categoriaGeneral === filtroCategoria)
+    : restaurantesCargados;
+
+  // 2) Filtro por estado: abiertos (estado = true) o cerrados
+  const visibles = deCategoria.filter(r => {
+    if (filtroEstado === 'abiertos') return !!r.estado;
+    if (filtroEstado === 'cerrados') return !r.estado;
+    return true;
+  });
+
+  if (msgEl) {
+    msgEl.style.color = '#666';
+    if (restaurantesCargados.length === 0) {
+      msgEl.textContent = 'No hay restaurantes registrados.';
+    } else if (filtroCategoria && deCategoria.length === 0) {
+      msgEl.textContent = 'Aún no hay restaurantes en esta categoría.';
+    } else if (visibles.length === 0) {
+      msgEl.textContent = 'No hay restaurantes que coincidan con este filtro.';
+    } else {
+      msgEl.textContent = '';
+    }
+  }
+
+  visibles.forEach(rest => {
+    const card = document.createElement('div');
+    card.className = 'restaurant-card';
+    card.setAttribute('data-id-restaurante', rest.idRestaurante || '');
+    const nombreRest = rest.nombre || 'Restaurante';
+    const imgAsignada = obtenerImagenRestaurante(nombreRest);
+    const imgSrc = imgAsignada || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&h=100&fit=crop';
+    card.innerHTML = `
+      <img src="${imgSrc}" alt="${nombreRest}">
+      <div class="restaurant-info">
+        <div class="restaurant-header">
+          <strong>${nombreRest}</strong>
+          <span class="rating"><i class="fa-solid fa-star"></i> ${rest.calificacion ?? 'N/A'}</span>
+        </div>
+        <p class="restaurant-desc">${rest.categoria || ''} ${rest.ciudad ? '- ' + rest.ciudad : ''}</p>
+        <div class="restaurant-footer">
+          <span class="time">${rest.estado ? 'ABIERTO' : 'CERRADO'}</span>
+          <span class="price">${rest.telefono || ''}</span>
+        </div>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+}
+
+// Cargar restaurantes reales (una sola petición; los filtros trabajan sobre la copia en memoria)
+async function cargarRestaurantes() {
+  const msgEl = document.getElementById('restaurantsMsg');
+  if (!document.getElementById('restaurantsList')) return;
   try {
     if (msgEl) msgEl.textContent = 'Cargando restaurantes...';
     const resp = typeof apiFetch === 'function' ? await apiFetch(`${API_BASE}/api/restaurantes`) : await fetch(`${API_BASE}/api/restaurantes`, { headers: { 'Authorization': `Bearer ${tokenDash}` } });
@@ -266,39 +331,11 @@ async function cargarRestaurantes() {
       return;
     }
     const data = await resp.json();
-    listEl.innerHTML = '';
-    if (msgEl) msgEl.textContent = '';
-    if (!Array.isArray(data) || data.length === 0) {
-      if (msgEl) {
-        msgEl.style.color = '#666';
-        msgEl.textContent = 'No hay restaurantes registrados.';
-      }
-      return;
-    }
-    data.forEach(rest => {
-      const card = document.createElement('div');
-      card.className = 'restaurant-card';
-      card.setAttribute('data-id-restaurante', rest.idRestaurante || '');
-      const nombreRest = rest.nombre || 'Restaurante';
-      if (rest.idRestaurante != null) restaurantesPorId.set(String(rest.idRestaurante), nombreRest);
-      const imgAsignada = obtenerImagenRestaurante(nombreRest);
-      const imgSrc = imgAsignada || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&h=100&fit=crop';
-      card.innerHTML = `
-        <img src="${imgSrc}" alt="${nombreRest}">
-        <div class="restaurant-info">
-          <div class="restaurant-header">
-            <strong>${nombreRest}</strong>
-            <span class="rating"><i class="fa-solid fa-star"></i> ${rest.calificacion ?? 'N/A'}</span>
-          </div>
-          <p class="restaurant-desc">${rest.categoria || ''} ${rest.ciudad ? '- ' + rest.ciudad : ''}</p>
-          <div class="restaurant-footer">
-            <span class="time">${rest.estado ? 'ABIERTO' : 'CERRADO'}</span>
-            <span class="price">${rest.telefono || ''}</span>
-          </div>
-        </div>
-      `;
-      listEl.appendChild(card);
+    restaurantesCargados = Array.isArray(data) ? data : [];
+    restaurantesCargados.forEach(rest => {
+      if (rest.idRestaurante != null) restaurantesPorId.set(String(rest.idRestaurante), rest.nombre || 'Restaurante');
     });
+    renderRestaurantes();
     renderCarritoUI();
   } catch (err) {
     if (msgEl) {
@@ -571,21 +608,26 @@ document.addEventListener('keydown', (e) => {
 
 renderCarritoUI();
 
-// ── Filtros (TODOS / ABIERTOS / CERRADOS) ──
-const filterBtns = document.querySelectorAll('.filter-btn');
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
-
-// ── Categorías ──
+// ── Filtro por categoría (círculos de la barra) ──
+// Tocar un círculo lo selecciona; tocar el mismo otra vez quita el filtro.
 const categoryItems = document.querySelectorAll('.category-item');
 categoryItems.forEach(item => {
   item.addEventListener('click', () => {
-    categoryItems.forEach(c => c.classList.remove('active'));
-    item.classList.add('active');
+    const categoria = item.getAttribute('data-categoria');
+    filtroCategoria = filtroCategoria === categoria ? null : categoria;
+    categoryItems.forEach(c => c.classList.toggle('active', c.getAttribute('data-categoria') === filtroCategoria));
+    renderRestaurantes();
+  });
+});
+
+// ── Filtro por estado (TODOS / ABIERTOS / CERRADOS) ──
+// Se combina con la categoría que esté seleccionada.
+const filterBtns = document.querySelectorAll('.filter-btn');
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filtroEstado = btn.getAttribute('data-estado') || 'todos';
+    filterBtns.forEach(b => b.classList.toggle('active', b === btn));
+    renderRestaurantes();
   });
 });
 
