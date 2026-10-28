@@ -15,7 +15,9 @@ const RESTAURANT_IMAGES = [
   { key: 'sushisakura', img: 'img/sushisakura.png' },
   // Temporales (SVG propios, sin derechos de autor)
   { key: 'batidosdelparque', img: 'img/restaurantes/batidos-del-parque.svg' },
-  { key: 'cafearomaandino', img: 'img/restaurantes/cafe-aroma-andino.svg' }
+  { key: 'cafearomaandino', img: 'img/restaurantes/cafe-aroma-andino.svg' },
+  { key: 'heladeriabrisadulce', img: 'img/restaurantes/heladeria-brisa-dulce.svg' },
+  { key: 'dulceesquinapasteleria', img: 'img/restaurantes/dulce-esquina-pasteleria.svg' }
 ];
 
 function normalizarNombre(nombre) {

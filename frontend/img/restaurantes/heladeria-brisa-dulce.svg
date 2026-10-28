@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240">
+  <rect width="320" height="240" fill="#e4f4ff"/>
+  <circle cx="160" cy="100" r="46" fill="#f7a8c4"/>
+  <text x="160" y="212" font-family="Segoe UI, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#7a2e4d">Heladería Brisa Dulce</text>
+</svg>
