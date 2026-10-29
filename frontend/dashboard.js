@@ -17,7 +17,9 @@ const RESTAURANT_IMAGES = [
   { key: 'batidosdelparque', img: 'img/restaurantes/batidos-del-parque.svg' },
   { key: 'cafearomaandino', img: 'img/restaurantes/cafe-aroma-andino.svg' },
   { key: 'heladeriabrisadulce', img: 'img/restaurantes/heladeria-brisa-dulce.svg' },
-  { key: 'dulceesquinapasteleria', img: 'img/restaurantes/dulce-esquina-pasteleria.svg' }
+  { key: 'dulceesquinapasteleria', img: 'img/restaurantes/dulce-esquina-pasteleria.svg' },
+  { key: 'fruteriaelhuertoalegre', img: 'img/restaurantes/fruteria-el-huerto-alegre.svg' },
+  { key: 'mercadoverdefresco', img: 'img/restaurantes/mercado-verde-fresco.svg' }
 ];
 
 function normalizarNombre(nombre) {
