@@ -1,8 +1,10 @@
 package com.emidomi.emidomi_cliente.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * Entidad JPA que representa la tabla 'clientes' en la base de datos db_domicilios.
@@ -50,6 +52,17 @@ public class Cliente {
     // Columna añadida con ALTER TABLE antes de este cambio.
     @Column(name = "foto_url", length = 255)
     private String fotoUrl;
+
+    // Token de un solo uso para restablecer la contraseña. Null = no hay recuperación en curso.
+    // @JsonIgnore: nunca sale en las respuestas JSON (sería una contraseña temporal).
+    @JsonIgnore
+    @Column(name = "reset_token", length = 100)
+    private String resetToken;
+
+    // Fecha y hora en que vence el token (1 hora después de pedirlo).
+    @JsonIgnore
+    @Column(name = "reset_token_expira")
+    private LocalDateTime resetTokenExpira;
 
     // ----------------------------------------------------------
     // Constructores
@@ -156,5 +169,23 @@ public class Cliente {
 
     public void setFotoUrl(String fotoUrl) {
         this.fotoUrl = fotoUrl;
+    }
+
+    @JsonIgnore
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    @JsonIgnore
+    public LocalDateTime getResetTokenExpira() {
+        return resetTokenExpira;
+    }
+
+    public void setResetTokenExpira(LocalDateTime resetTokenExpira) {
+        this.resetTokenExpira = resetTokenExpira;
     }
 }

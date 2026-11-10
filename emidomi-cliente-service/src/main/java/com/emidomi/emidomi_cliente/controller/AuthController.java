@@ -1,8 +1,11 @@
 package com.emidomi.emidomi_cliente.controller;
 
 import com.emidomi.emidomi_cliente.config.JwtUtil;
+import com.emidomi.emidomi_cliente.dto.OlvideContrasenaRequest;
+import com.emidomi.emidomi_cliente.dto.RestablecerContrasenaRequest;
 import com.emidomi.emidomi_cliente.model.Cliente;
 import com.emidomi.emidomi_cliente.repository.ClienteRepository;
+import com.emidomi.emidomi_cliente.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @PostMapping("/registro")
     public ResponseEntity<?> registrar(@RequestBody Cliente clienteNuevo) {
@@ -65,6 +71,31 @@ public class AuthController {
                     .status(HttpStatus.UNAUTHORIZED)
                     .body("Error en la autenticación.");
         }
+    }
+
+    /** Mensaje único: el mismo exista o no el correo, para no revelar cuentas registradas. */
+    private static final String MENSAJE_OLVIDE =
+            "Si el correo está registrado, te enviaremos un enlace para restablecer tu contraseña.";
+
+    /**
+     * POST /api/auth/olvide-contrasena
+     * Body: {"correo": "..."}. Responde siempre 200 con el mismo mensaje.
+     */
+    @PostMapping("/olvide-contrasena")
+    public ResponseEntity<String> olvideContrasena(@RequestBody OlvideContrasenaRequest peticion) {
+        passwordResetService.solicitarRecuperacion(peticion.correo());
+        return ResponseEntity.ok(MENSAJE_OLVIDE);
+    }
+
+    /**
+     * POST /api/auth/restablecer-contrasena
+     * Body: {"token": "...", "nuevaContrasena": "..."}.
+     * Token inválido, vencido o contraseña corta -> 400 con el motivo (lo maneja GlobalExceptionHandler).
+     */
+    @PostMapping("/restablecer-contrasena")
+    public ResponseEntity<String> restablecerContrasena(@RequestBody RestablecerContrasenaRequest peticion) {
+        passwordResetService.restablecerContrasena(peticion.token(), peticion.nuevaContrasena());
+        return ResponseEntity.ok("Tu contraseña se cambió correctamente. Ya puedes iniciar sesión.");
     }
 
     public static class LoginRequest {

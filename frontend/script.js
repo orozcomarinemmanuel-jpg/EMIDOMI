@@ -94,6 +94,33 @@ if (loginForm) {
 }
 
 // ── Registro ──
+
+// Inicia sesión justo después de crear la cuenta. Copia la lógica del login de arriba
+// (misma petición, mismas claves en localStorage). Devuelve true si la sesión quedó guardada.
+// La contraseña solo se usa en esta llamada: no se guarda en ningún almacenamiento.
+async function iniciarSesionTrasRegistro(correo, contrasena) {
+  const resp = await fetch(`${API_BASE}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ correo: correo, contrasena: contrasena })
+  });
+  if (resp.status !== 200) return false;
+
+  const token = (await resp.text()).trim();
+  if (!token) return false;
+
+  // Mismas claves que usa el login normal
+  localStorage.setItem('emidomi_token', token);
+  try {
+    // Extraer idCliente del payload del JWT (base64url), igual que el login
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (payload.idCliente) localStorage.setItem('emidomi_cliente_id', String(payload.idCliente));
+  } catch (err) {
+    // Si no se puede decodificar, la sesión igual queda guardada (igual que el login)
+  }
+  return true;
+}
+
 const registroForm = document.getElementById('registroForm');
 if (registroForm) {
   registroForm.addEventListener('submit', async (e) => {
@@ -151,23 +178,35 @@ if (registroForm) {
       });
 
       if (resp.status === 201) {
+        // Cuenta creada: entrar de inmediato con el mismo correo y contraseña
         if (mensaje) {
           mensaje.style.color = 'green';
-          mensaje.textContent = '¡Registro exitoso! Redirigiendo al inicio de sesión...';
+          mensaje.textContent = '¡Cuenta creada! Iniciando sesión...';
         }
-        setTimeout(() => {
+
+        let sesionIniciada = false;
+        try {
+          sesionIniciada = await iniciarSesionTrasRegistro(email, password);
+        } catch (err) {
+          sesionIniciada = false;
+        }
+
+        if (sesionIniciada) {
+          // Misma página a la que redirige el login
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 800);
+        } else {
+          // El login automático falló: el login muestra este aviso (ver index.html)
+          sessionStorage.setItem('emidomi_aviso',
+            'Tu cuenta fue creada. Ya puedes iniciar sesión con tu correo y contraseña.');
           window.location.href = 'index.html';
-        }, 1500);
+        }
         return;
       }
 
-      if (resp.status === 409) {
-        if (mensaje) {
-          mensaje.style.color = 'red';
-          mensaje.textContent = 'Ya existe un cliente registrado con ese correo.';
-        }
-        return;
-      }
+      // Errores (por ejemplo 409 correo duplicado): se muestra el mensaje real del backend
+      // y no se redirige. Va por el bloque de texto de abajo.
 
       const texto = await resp.text();
       if (mensaje) {

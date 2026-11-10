@@ -23,13 +23,89 @@
     </form>
 
     <!-- Links -->
-    <div class="login-links">
-      <a href="registro.html">Registrarse</a> | <a href="#">¿Olvidó la contraseña?</a>
+    <div class="login-links" id="loginLinks">
+      <a href="registro.html">Registrarse</a> | <a href="#" id="linkOlvide">¿Olvidó la contraseña?</a>
     </div>
 
     <p id="loginMessage"></p>
+
+    <!-- Recuperar contraseña: se muestra en esta misma página al pulsar el enlace -->
+    <div id="olvideSeccion" hidden>
+      <p>Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <form id="olvideForm" novalidate>
+        <input type="email" id="olvideCorreo" placeholder="Correo electrónico" required>
+        <button type="submit" id="btnOlvide">Enviar enlace</button>
+      </form>
+      <div class="login-links">
+        <a href="#" id="linkVolverLogin">Volver al inicio de sesión</a>
+      </div>
+      <p id="olvideMessage"></p>
+    </div>
   </div>
   <script src="script.js"></script>
+  <script>
+    // ── Recuperar contraseña: mostrar/ocultar el formulario y enviar el correo ──
+    (function recuperarContrasena() {
+      const loginForm = document.getElementById('loginForm');
+      const loginLinks = document.getElementById('loginLinks');
+      const loginMessage = document.getElementById('loginMessage');
+      const olvideSeccion = document.getElementById('olvideSeccion');
+      const olvideForm = document.getElementById('olvideForm');
+      const olvideCorreo = document.getElementById('olvideCorreo');
+      const olvideMessage = document.getElementById('olvideMessage');
+      const btnOlvide = document.getElementById('btnOlvide');
+
+      // Muestra el formulario de recuperación y oculta el de login
+      document.getElementById('linkOlvide').addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.hidden = true;
+        loginLinks.hidden = true;
+        loginMessage.textContent = '';
+        olvideSeccion.hidden = false;
+        olvideCorreo.focus();
+      });
+
+      // Vuelve al login
+      document.getElementById('linkVolverLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        olvideSeccion.hidden = true;
+        olvideMessage.textContent = '';
+        loginForm.hidden = false;
+        loginLinks.hidden = false;
+      });
+
+      // Envía el correo al backend. El backend responde siempre lo mismo,
+      // exista o no el correo; mostramos su mensaje tal cual.
+      olvideForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const correo = olvideCorreo.value.trim();
+        olvideMessage.style.color = '#333';
+        if (!correo) {
+          olvideMessage.style.color = 'red';
+          olvideMessage.textContent = 'Escribe tu correo electrónico.';
+          return;
+        }
+
+        btnOlvide.disabled = true;
+        olvideMessage.textContent = 'Enviando...';
+        try {
+          const resp = await fetch(`${API_BASE}/api/auth/olvide-contrasena`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ correo: correo })
+          });
+          const texto = await resp.text();
+          olvideMessage.style.color = resp.ok ? 'green' : 'red';
+          olvideMessage.textContent = texto || 'Revisa tu correo en unos minutos.';
+        } catch (err) {
+          olvideMessage.style.color = 'red';
+          olvideMessage.textContent = 'No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.';
+        } finally {
+          btnOlvide.disabled = false;
+        }
+      });
+    })();
+  </script>
   <script>
     // Aviso que deja perfil.js al cambiar el correo (la sesión se cierra y hay que entrar de nuevo)
     (function mostrarAvisoPendiente() {

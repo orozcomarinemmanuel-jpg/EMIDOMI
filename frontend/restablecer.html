@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmiDomi - Restablecer contraseña</title>
+  <!-- Mismo estilo visual que el login -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-bg">
+  <div class="login-box">
+    <!-- Logo -->
+    <div class="logo">
+      <img src="img/logo.png" alt="Logo EmiDomi">
+    </div>
+
+    <!-- Sin token en la URL: no hay nada que restablecer -->
+    <div id="sinToken" hidden>
+      <p>El enlace no es válido. Solicita uno nuevo desde el inicio de sesión.</p>
+      <div class="login-links">
+        <a href="index.html">Volver al inicio de sesión</a>
+      </div>
+    </div>
+
+    <!-- Formulario de nueva contraseña (solo si hay token) -->
+    <div id="formularioRestablecer" hidden>
+      <p>Escribe tu nueva contraseña (mínimo 8 caracteres).</p>
+      <form id="restablecerForm" novalidate>
+        <div class="password-field">
+          <input type="password" id="nuevaContrasena" placeholder="Nueva contraseña" autocomplete="new-password" required>
+        </div>
+        <div class="password-field">
+          <input type="password" id="confirmarContrasena" placeholder="Confirmar contraseña" autocomplete="new-password" required>
+        </div>
+        <button type="submit" id="btnRestablecer">Guardar contraseña</button>
+      </form>
+      <div class="login-links">
+        <a href="index.html">Volver al inicio de sesión</a>
+      </div>
+    </div>
+
+    <p id="restablecerMessage"></p>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // ── Restablecer contraseña: lee el token de la URL y envía la nueva contraseña ──
+    (function restablecerContrasena() {
+      const sinToken = document.getElementById('sinToken');
+      const formularioRestablecer = document.getElementById('formularioRestablecer');
+      const restablecerForm = document.getElementById('restablecerForm');
+      const nuevaContrasena = document.getElementById('nuevaContrasena');
+      const confirmarContrasena = document.getElementById('confirmarContrasena');
+      const btnRestablecer = document.getElementById('btnRestablecer');
+      const mensaje = document.getElementById('restablecerMessage');
+
+      // El token viene en la URL: restablecer.html?token=XXXX
+      const token = new URLSearchParams(window.location.search).get('token');
+      if (!token) {
+        sinToken.hidden = false;
+        return;
+      }
+      formularioRestablecer.hidden = false;
+
+      function mostrar(texto, esError) {
+        mensaje.style.color = esError ? 'red' : 'green';
+        mensaje.textContent = texto;
+      }
+
+      restablecerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nueva = nuevaContrasena.value;
+        const confirmar = confirmarContrasena.value;
+
+        // Validación en el navegador antes de enviar
+        if (nueva.length < 8) {
+          mostrar('La contraseña debe tener al menos 8 caracteres.', true);
+          return;
+        }
+        if (nueva !== confirmar) {
+          mostrar('Las contraseñas no coinciden.', true);
+          return;
+        }
+
+        btnRestablecer.disabled = true;
+        mensaje.textContent = 'Guardando...';
+        try {
+          // Solo se envía la nueva contraseña, nunca la confirmación
+          const resp = await fetch(`${API_BASE}/api/auth/restablecer-contrasena`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token, nuevaContrasena: nueva })
+          });
+          const texto = await resp.text();
+
+          if (resp.ok) {
+            // Éxito: avisamos y volvemos al login en unos segundos
+            formularioRestablecer.hidden = true;
+            mostrar(texto || 'Tu contraseña se cambió correctamente.', false);
+            setTimeout(() => { window.location.href = 'index.html'; }, 3000);
+            return;
+          }
+          // 400: el backend explica el motivo (token inválido, vencido o contraseña corta)
+          mostrar(texto || 'No se pudo cambiar la contraseña.', true);
+        } catch (err) {
+          mostrar('No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.', true);
+        } finally {
+          btnRestablecer.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

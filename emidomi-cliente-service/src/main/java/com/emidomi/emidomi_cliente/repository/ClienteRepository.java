@@ -29,4 +29,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
     // ¿Existe OTRO cliente (distinto de idCliente) con este correo, sin importar mayúsculas?
     // Sirve al editar: el propio cliente puede conservar su correo.
     boolean existsByCorreoIgnoreCaseAndIdClienteNot(String correo, Integer idCliente);
+
+    // Busca al cliente que tiene este token de recuperación (para restablecer la contraseña).
+    Optional<Cliente> findByResetToken(String resetToken);
 }

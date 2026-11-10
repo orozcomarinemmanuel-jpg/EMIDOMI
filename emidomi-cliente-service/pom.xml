@@ -53,6 +53,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<!-- Correo: envío del enlace para recuperar la contraseña (versión gestionada por el padre) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<!-- JWT: generación y validación de tokens -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

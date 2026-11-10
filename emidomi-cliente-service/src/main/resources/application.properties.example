@@ -15,3 +15,15 @@ server.port=8080
 spring.servlet.multipart.max-file-size=5MB
 spring.servlet.multipart.max-request-size=6MB
 app.uploads-dir=uploads
+
+# Recuperación de contraseña
+# URL base del frontend (el enlace del correo será {app.frontend-url}/restablecer.html?token=...)
+app.frontend-url=http://127.0.0.1:5500/frontend
+# Correo saliente (SMTP). Valores de EJEMPLO: pon los tuyos en application.properties (ignorado por git).
+# Si spring.mail.host no está configurado, el enlace se imprime en el log del backend.
+spring.mail.host=smtp.ejemplo.com
+spring.mail.port=587
+spring.mail.username=TU_CORREO@ejemplo.com
+spring.mail.password=TU_CLAVE_SMTP_AQUI
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
